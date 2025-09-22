@@ -4,23 +4,27 @@ import cloudflight.integra.backend.entity.User;
 import cloudflight.integra.backend.entity.validation.UserValidator;
 import cloudflight.integra.backend.entity.validation.ValidationException;
 import cloudflight.integra.backend.exception.NotFoundException;
-import cloudflight.integra.backend.repository.inMemoryImpl.InMemoryUserRepositoryImpl;
+import cloudflight.integra.backend.repository.UserRepository;
 import cloudflight.integra.backend.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 class UserServiceImplTest {
-    private InMemoryUserRepositoryImpl userRepo;
-    private UserValidator userValidator;
+
+    @Autowired
+    private UserRepository userRepo;
     private UserServiceImpl userService;
     private User user1, user2;
 
     @BeforeEach
     void setUp() {
-        userRepo = new InMemoryUserRepositoryImpl();
-        userValidator = new UserValidator();
+        userRepo.deleteAll();
+        UserValidator userValidator = new UserValidator();
         userService = new UserServiceImpl(userRepo, userValidator);
         user1 = new User(null, "Alice", "alice@email.com", "123");
         user2 = new User(null, "Marc", "marc@yahoo.com", "abcd999");
@@ -93,7 +97,7 @@ class UserServiceImplTest {
 
     @Test
     void testAddUser_NullUser() {
-        assertThrows(IllegalArgumentException.class, () -> userService.addUser(null));
+        assertThrows(NullPointerException.class, () -> userService.addUser(null));
     }
 
     @Test
@@ -122,7 +126,7 @@ class UserServiceImplTest {
         userService.addUser(user1);
         User duplicate = new User(null, "Bob", "alice@email.com", "pass2");
         ValidationException ex = assertThrows(ValidationException.class, () -> userService.addUser(duplicate));
-        assertTrue(ex.getErrors().contains("Email already exists!"));
+        assertTrue(ex.getMessage().contains("Email already exists!"));
     }
 
     @Test

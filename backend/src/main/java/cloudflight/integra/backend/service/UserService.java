@@ -2,6 +2,8 @@ package cloudflight.integra.backend.service;
 
 import cloudflight.integra.backend.entity.User;
 
+import java.util.Collection;
+
 /**
  * Service interface for managing User entities.
  */
@@ -23,6 +25,13 @@ public interface UserService {
     User getUser(Long id);
 
     /**
+     * Retrieves all users in the system.
+     *
+     * @return an iterable of all User entities
+     */
+    Collection<User> getAllUsers();
+
+    /**
      * Updates an existing user's details.
      *
      * @param user the User entity with updated fields (should have a non-null id)
@@ -36,4 +45,12 @@ public interface UserService {
      * @param id the ID of the user to delete
      */
     void deleteUser(Long id);
+
+    /**
+     * Retrieves a user by their email.
+     *
+     * @param email the email of the user
+     * @return the User entity
+     */
+    User getUserByEmail(String email);
 }

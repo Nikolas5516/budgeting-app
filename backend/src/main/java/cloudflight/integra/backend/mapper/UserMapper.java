@@ -4,6 +4,10 @@ import cloudflight.integra.backend.dto.UserDTO;
 import cloudflight.integra.backend.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @Component
 public class UserMapper {
     /**
@@ -12,13 +16,7 @@ public class UserMapper {
      * @return the corresponding UserDto
      */
     public static UserDTO toDto(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setPassword(user.getPassword());
-        dto.setCreatedAt(user.getCreatedAt());
-        return dto;
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getCreatedAt(), user.getBalance());
     }
 
     /**
@@ -26,7 +24,17 @@ public class UserMapper {
      * @param dto the UserDto to convert
      * @return the corresponding User entity
      * */
-    public User fromDto(UserDTO dto) {
-        return new User(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword());
+    public static User fromDto(UserDTO dto) {
+        return new User(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword(), dto.getBalance());
+    }
+
+    public static Collection<UserDTO> toDtoList(Collection<User> users) {
+        List<UserDTO> userDTOS = new ArrayList<>();
+
+        for (User user : users) {
+            userDTOS.add(toDto(user));
+        }
+
+        return userDTOS;
     }
 }
