@@ -1,4 +1,4 @@
-package cloudflight.integra.backend.security;
+package cloudflight.integra.backend.controller.problem;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
