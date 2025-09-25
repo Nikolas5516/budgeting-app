@@ -41,7 +41,8 @@ class UserControllerTest {
     void setUp() throws Exception {
 
         userRepo.deleteAll();
-        userRepo.save(new User(null, "Alice", "alice@email.com", "123"));
+        User alice = userRepo.save(new User(null, "Alice", "alice@email.com", "123"));
+        Long aliceId = alice.getId();
         userRepo.save(new User(null, "Marc", "marc@yahoo.com", "abcd999"));
 
         RegisterRequest registerRequest = new RegisterRequest();
@@ -71,7 +72,10 @@ class UserControllerTest {
 
     @Test
     void testGetUserById() throws Exception {
-        mockMvc.perform(get("/api/v1/users/1")
+        User alice = userRepo.findByEmail("alice@email.com").orElseThrow();
+        Long aliceId = alice.getId();
+
+        mockMvc.perform(get("/api/v1/users/" + aliceId)
                         .header("Authorization", "Bearer " + testToken))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -107,13 +111,16 @@ class UserControllerTest {
 
     @Test
     void testUpdateUser() throws Exception {
+        User alice = userRepo.findByEmail("alice@email.com").orElseThrow();
+        Long aliceId = alice.getId();
+
         UserDTO updateDto = new UserDTO();
-        updateDto.setId(1L);
+        updateDto.setId(aliceId);
         updateDto.setName("Alice Updated");
         updateDto.setEmail("alice@new.com");
         updateDto.setPassword("newpass");
 
-        mockMvc.perform(put("/api/v1/users/1")
+        mockMvc.perform(put("/api/v1/users/" + aliceId)
                         .header("Authorization", "Bearer " + testToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto)))
@@ -121,14 +128,18 @@ class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
+
     @Test
     void testDeleteUser() throws Exception {
-        mockMvc.perform(delete("/api/v1/users/1")
+        User alice = userRepo.findByEmail("alice@email.com").orElseThrow();
+        Long aliceId = alice.getId();
+
+        mockMvc.perform(delete("/api/v1/users/" + aliceId)
                         .header("Authorization", "Bearer " + testToken))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/v1/users/1")
+        mockMvc.perform(get("/api/v1/users/" + aliceId)
                         .header("Authorization", "Bearer " + testToken))
                 .andDo(print())
                 .andExpect(status().isNotFound());
