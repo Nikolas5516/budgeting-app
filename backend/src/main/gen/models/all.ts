@@ -1,5 +1,0 @@
-export * from '..\models\ExpenseDTO'
-export * from '..\models\IncomeDTO'
-export * from '..\models\PaymentDTO'
-export * from '..\models\SavingDTO'
-export * from '..\models\UserDTO'

@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.5'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'com.diffplug.spotless' version '6.22.0'
+    id 'org.openapi.generator' version '7.6.0'
 
 }
 
@@ -39,7 +40,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
 
     // Springdoc OpenAPI (UI + starter)
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
 
     // DB dependency
     implementation 'org.postgresql:postgresql:42.7.7'
@@ -72,5 +73,34 @@ spotless {
     java {
         palantirJavaFormat()
     }
+}
+
+openApiGenerate {
+    generatorName.set("typescript-axios")
+    inputSpec.set("$rootDir/backend/src/main/resources/api-docs.yaml")
+    outputDir.set("$rootDir/backend/src/main/gen")
+    apiPackage.set("api")
+    modelPackage.set("models")
+
+    configOptions.set([
+            npmName: "my-ts-client",
+            supportsES6: "true",
+            withSeparateModelsAndApi: "true",
+            modelPackage: "models",
+            apiPackage: "api",
+            generateAliasAsModel: "true",
+            enumPropertyNaming: "UPPERCASE",
+            useSingleRequestParameter: "true",
+            apiSuffix: "Api",
+            modelSuffix: "",
+            modelNameSuffix: "",
+    ])
+
+}
+
+
+
+tasks.named("build") {
+    dependsOn("openApiGenerate")
 }
 
