@@ -12,8 +12,16 @@ public class IncomeMapper {
    * @return the corresponding Income entity
    */
   public static Income toEntity(IncomeDTO dto) {
-    return new Income(
-        dto.getId(), dto.getAmount(), dto.getSource(), dto.getDate(), dto.getDescription());
+    Income income = new Income();
+    income.setId(dto.getId());
+    income.setUserId(dto.getUserId());
+    income.setSource(dto.getSource());
+    income.setAmount(dto.getAmount());
+    income.setDate(dto.getDate());
+    income.setDescription(dto.getDescription());
+    income.setFrequency(dto.getFrequency());
+    income.setEndDate(dto.getEndDate());
+    return income;
   }
 
   /**
@@ -29,6 +37,10 @@ public class IncomeMapper {
     dto.setSource(income.getSource());
     dto.setDate(income.getDate());
     dto.setDescription(income.getDescription());
+    dto.setFrequency(income.getFrequency());
+    dto.setEndDate(income.getEndDate());
+    dto.setUserId(income.getUserId());
+
     return dto;
   }
 }
