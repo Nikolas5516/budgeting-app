@@ -1,20 +1,20 @@
-import {ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
-
+import {provideAnimations} from '@angular/platform-browser/animations';
 import {routes} from './app.routes';
 import {providePrimeNG} from 'primeng/config';
-
-import LaraLightBlue from '@primeuix/themes/aura';
+import {MessageService} from 'primeng/api';
+import {ToastModule} from 'primeng/toast';
+import LaraLightTeal from '@primeuix/themes/aura';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {AuthInterceptor} from './interceptors/auth.interceptor';
 import {ErrorInterceptor} from './interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
     providePrimeNG({
       theme: {
-        preset: LaraLightBlue,
+        preset: LaraLightTeal,
         options: {
           darkModeSelector: null,
         }
@@ -27,6 +27,12 @@ export const appConfig: ApplicationConfig = {
         AuthInterceptor,
         ErrorInterceptor
       ])
-    )
+    ),
+
+    provideAnimations(),
+
+    importProvidersFrom(ToastModule),
+
+    MessageService,
   ]
 };
