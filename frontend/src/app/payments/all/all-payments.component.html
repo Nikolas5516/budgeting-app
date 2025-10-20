@@ -1,0 +1,52 @@
+<div class="app-container">
+
+  <!-- Sidebar -->
+  <app-sidebar (menuSelect)="onMenuSelect($event)"></app-sidebar>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="page-wrapper">
+
+      <!-- Header + Add Payment -->
+      <div class="payment-header">
+        <div class="payment-controls">
+          <div class="filters">
+            <input type="date" [(ngModel)]="filterDate" placeholder="Filter by Date">
+            <input type="text" [(ngModel)]="filterName" placeholder="Filter by Name">
+            <select [(ngModel)]="filterStatus">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="failed">Failed</option>
+            </select>
+          </div>
+
+          <button id="addPaymentBtn" (click)="goToAddPayment()">+ Add Payment</button>
+        </div>
+      </div>
+
+      <!-- Payments Table -->
+      <div class="payment-table">
+        <div class="table-header">
+          <span>No.</span>
+          <span>Name</span>
+          <span>Status</span>
+          <span>Payment Date</span>
+          <span>Actions</span>
+        </div>
+
+        <div *ngFor="let payment of filteredPayments(); let i = index" class="table-row">
+          <span>{{ i + 1 }}</span>
+          <span>{{ payment.name }}</span>
+          <span>{{ payment.status }}</span>
+          <span>{{ payment.payment_date }}</span>
+          <span>
+            <button class="button edit" (click)="editPayment(payment)"><i class="pi pi-pencil"></i>Edit</button>
+             <button class="button delete"> <i class="pi pi-trash"></i>Delete</button>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
