@@ -33,6 +33,6 @@ export const appConfig: ApplicationConfig = {
 
     importProvidersFrom(ToastModule),
 
-    MessageService,
+    MessageService
   ]
 };
