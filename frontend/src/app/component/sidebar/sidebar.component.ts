@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./sidebar.component.css']
 })
 
-export class SidebarPaymentComponent {
+export class SidebarComponent {
 
 
   @Output() menuSelect = new EventEmitter<string>();
