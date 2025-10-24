@@ -1,0 +1,394 @@
+/* === Fundal general === */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #F0E6FA;
+  color: black;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+/* === Container principal === */
+.app-container {
+  display: flex;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* === Sidebar === */
+.sidebar {
+  flex: 0 0 240px;
+  background-color: #E6CCF2;
+  color: #4B0082;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.logo-shape {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #A16EFF, #6A0DAD);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.logo-shape i {
+  font-size: 24px;
+  color: white;
+}
+
+.logo h1 {
+  font-size: 20px;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #4B0082;
+  text-align: center;
+}
+
+/* Buton hamburger (ascuns pe desktop) */
+.menu-toggle {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  color: #4B0082;
+}
+
+/* Meniu */
+.menu {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  gap: 10px;
+  color: #4B0082;
+  font-weight: 500;
+}
+
+.menu li.active,
+.menu li:hover {
+  background-color: #DCC6E0;
+  transform: translateX(5px);
+}
+
+/* === Content === */
+.content {
+  flex: 1;
+  background: #fff;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.05);
+
+  width: 100%;
+  height: 100%;
+}
+
+/* Wrapper interior */
+.page-wrapper {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* === Card general === */
+.card {
+  background: #F9F6FC;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+/* === User header === */
+.user-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-header .avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #E6CCF2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-header .avatar i {
+  font-size: 26px;
+  color: #6A0DAD;
+}
+
+.user-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #4B0082;
+}
+
+.user-header p {
+  margin: 2px 0 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.user-header .edit-btn {
+  margin-left: auto;
+  padding: 6px 12px;
+  background: #6A0DAD;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.user-header .edit-btn:hover {
+  background: #8B2DC7;
+}
+
+/* === Detalii cont (grid 2 coloane) === */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.detail {
+  display: flex;
+  gap: 8px;
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.detail i {
+  font-size: 16px;
+  color: #6A0DAD;
+}
+
+/* === Quick actions === */
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  flex: 1 1 120px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #E6CCF2;
+  color: #4B0082;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.actions button:hover {
+  background: #DCC6E0;
+}
+
+/* === Activitate recentă === */
+.activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.activity-item i {
+  font-size: 16px;
+  color: #6A0DAD;
+}
+
+.activity-item p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.activity-item span {
+  font-size: 12px;
+  color: #777;
+}
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+  /* Layout principal */
+  .app-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    flex: 0 0 auto;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    box-shadow: none;
+  }
+
+  /* Arătăm butonul de meniu */
+  .menu-toggle {
+    display: block;
+  }
+
+  /* Ascundem meniul implicit */
+  .menu {
+    display: none;
+  }
+
+  /* Meniul devine vertical când e activ */
+  .menu.show {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* Conținut */
+  .content {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* Grid detalii: o singură coloană */
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Acțiuni verticale */
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+
+  /* Ajustări text */
+  .user-header h2 {
+    font-size: 18px;
+  }
+
+  .user-header p {
+    font-size: 12px;
+  }
+
+  body {
+    overflow: auto;
+  }
+}
+
+/* === Loading, Error, No Data States === */
+.loading-container,
+.error-container,
+.no-data-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 40px 20px;
+}
+
+.loading-spinner,
+.error-message,
+.no-data-message {
+  text-align: center;
+  background: #F9F6FC;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 400px;
+}
+
+.loading-spinner i {
+  font-size: 48px;
+  color: #6A0DAD;
+  margin-bottom: 20px;
+}
+
+.loading-spinner p {
+  font-size: 16px;
+  color: #4B0082;
+  margin: 0;
+}
+
+.error-message i,
+.no-data-message i {
+  font-size: 48px;
+  color: #dc3545;
+  margin-bottom: 20px;
+}
+
+.no-data-message i {
+  color: #6c757d;
+}
+
+.error-message p,
+.no-data-message p {
+  font-size: 16px;
+  color: #4B0082;
+  margin: 0 0 20px 0;
+}
+
+.retry-btn {
+  padding: 12px 24px;
+  background: #6A0DAD;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.retry-btn:hover {
+  background: #8B2DC7;
+}

@@ -4,7 +4,7 @@
 
     <p class="subtitle">Sign up to get started</p>
 
-    <form (ngSubmit)="register()">
+    <form (ngSubmit)="onRegister()">
       <div class="form-field">
         <input
           [(ngModel)]="name"
@@ -48,8 +48,8 @@
 
       <div class="form-field">
         <p-password
-          [(ngModel)]="confirm_password"
-          name="confirm_password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
           placeholder="Confirm Password"
           [toggleMask]="true"
           [feedback]="false"
@@ -76,6 +76,6 @@
       Already have an account? <a [routerLink]="['/login']">Login</a>
     </p>
 
-    <p-message *ngIf="error" severity="error" [text]="error" styleClass="w-full"></p-message>
+    <p-message *ngIf="errorMessage" [text]="errorMessage" severity="error" styleClass="w-full"></p-message>
   </div>
 </div>
