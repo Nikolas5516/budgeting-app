@@ -15,7 +15,6 @@ public class PaymentMapper {
                 payment.getId(),
                 payment.getExpense() != null ? payment.getExpense().getId() : null,
                 payment.getName(),
-                payment.getAmount(),
                 payment.getStatus(),
                 payment.getPaymentDate());
     }
@@ -27,7 +26,6 @@ public class PaymentMapper {
         Payment payment = new Payment();
         payment.setId(dto.getId());
         payment.setName(dto.getName());
-        payment.setAmount(dto.getAmount());
         payment.setStatus(dto.getStatus());
         payment.setPaymentDate(dto.getPaymentDate());
 

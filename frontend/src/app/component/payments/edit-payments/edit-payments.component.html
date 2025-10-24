@@ -6,9 +6,9 @@
   <div class="content">
     <div class="page-wrapper">
       <div class="welcome">
-        <h2>Add Payment</h2>
+        <h2>Edit Payment</h2>
       </div>
-      <p class="payment-subtitle">Fill in the details of your payment</p>
+      <p class="payment-subtitle">Edit the details of your payment</p>
 
       <form class="payment-form" #form="ngForm" (ngSubmit)="savePayment(form)">
         <!-- Payment Name -->
@@ -48,7 +48,7 @@
         <!-- Payment Date -->
         <div class="form-field">
           <label for="payment_date">Payment Date <span class="required">*</span></label>
-          <input type="date" id="payment_date" [(ngModel)]="payment.payment_date" name="payment_date"
+          <input type="date" id="payment_date" [(ngModel)]="payment.paymentDate" name="payment_date"
                  (input)="onDateInput($event)"
                  [ngClass]="{'invalid-field': submitted && isDateInvalid}">
           <p-message class="field-msg" [ngClass]="{'show': submitted && isDateInvalid}"
@@ -64,7 +64,7 @@
           <label for="expense_id">Expense ID <span class="required">*</span></label>
           <input type="text" id="expense_id"
                  name="expense_id"
-                 [(ngModel)]="payment.expense_id"
+                 [(ngModel)]="payment.expenseId"
                  (input)="onExpenseIdInput($event)"
                  [ngClass]="{'invalid-field': submitted && isExpenseIdInvalid}"
                  placeholder="Enter numeric expense id">
@@ -76,37 +76,28 @@
                      size="small"></p-message>
         </div>
 
-        <!-- Checkbox -->
-        <div class="add-more-checkbox">
-          <p-checkbox [(ngModel)]="addMore"
-                      name="addMore"
-                      binary="true"
-                      inputId="addMore"></p-checkbox>
-          <label for="addMore">Create more payments</label>
-        </div>
-
-
         <div class="button">
-          <!-- Submit Button -->
+          <!-- Edit Button -->
           <p-toast #toast position="top-left"
-                   style="margin-left: 600px; margin-bottom: 140px;"></p-toast>
+                 style="margin-left: 600px; margin-bottom: 140px;"
+          ></p-toast>
           <button type="button" pRipple class="submit-btn" (click)="savePayment(form)">
-            Save Payment
+            Edit Payment
           </button>
 
           <!-- Cancel Button -->
           <button type="button" class="submit-btn" (click)="cancelEdit()">
-            Cancel
+             Cancel
           </button>
         </div>
 
         <!-- Keep Track Section -->
         <div class="piggy-bank-section">
           <div class="piggy-bank-icon">
-            <i class="pi pi-credit-card"></i>
+            <i class="pi pi-sparkles"></i>
           </div>
           <p class="text">
-            Keep track of your payments to stay on top of your expenses! 💳
+            Make sure all details are correct before saving your changes. ✏️
           </p>
         </div>
       </form>

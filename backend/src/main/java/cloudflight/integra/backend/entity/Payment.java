@@ -1,8 +1,6 @@
 package cloudflight.integra.backend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PositiveOrZero;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -24,10 +22,6 @@ public class Payment {
     private StatusEnum status; // pending, paid, failed
 
     private LocalDate paymentDate;
-
-    @PositiveOrZero
-    @Column(nullable = false)
-    private BigDecimal amount;
 
     // Enum pentru status
     public enum StatusEnum {
@@ -63,14 +57,6 @@ public class Payment {
     public void setName(String name) {
 
         this.name = name;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
     }
 
     public Expense getExpense() {

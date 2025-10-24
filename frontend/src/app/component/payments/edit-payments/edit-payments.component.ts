@@ -8,13 +8,8 @@ import { MessageModule } from 'primeng/message';
 import {ToastModule} from 'primeng/toast';
 import {SidebarPaymentComponent} from '../sidebar/sidebar.component';
 import {MenuService} from '../services/menu.service';
+import {PaymentControllerService, PaymentDTO} from '../../../api';
 
-interface Payment {
-  name: string;
-  status: '' | 'pending' | 'paid' | 'failed';
-  payment_date: string;
-  expense_id: number | null;
-}
 
 @Component({
   selector: 'app-edit-payment',
@@ -25,7 +20,7 @@ interface Payment {
   styleUrls: ['./edit-payments.component.css']
 })
 export class EditPaymentComponent {
-  payment: Payment = {name: '', status: '', payment_date: '', expense_id: null};
+  payment: PaymentDTO = {};
   submitted = false;
 
 
@@ -36,11 +31,13 @@ export class EditPaymentComponent {
   expenseErrorMessage = '';
 
 
-  constructor(private router: Router, private messageService: MessageService, private menuService: MenuService) {
+  constructor(private router: Router, private messageService: MessageService, private menuService: MenuService, private paymentService: PaymentControllerService) {
   }
 
+
+
   onNameInput(event: Event) {
-    this.isNameInvalid = !this.payment.name.trim();
+    this.isNameInvalid = !this.payment.name?.trim();
   }
 
   onStatusChange() {
@@ -48,7 +45,7 @@ export class EditPaymentComponent {
   }
 
   onDateInput(event: Event) {
-    this.isDateInvalid = !this.payment.payment_date;
+    this.isDateInvalid = !this.payment.paymentDate;
   }
 
   onExpenseIdInput(event: Event) {
@@ -57,15 +54,15 @@ export class EditPaymentComponent {
     const num = Number(value);
 
     if (!value) {
-      this.payment.expense_id = null;
+      this.payment.expenseId = 0;
       this.expenseErrorMessage = 'Please provide a valid expense id.';
       this.isExpenseIdInvalid = true;
     } else if (isNaN(num) || num <= 0) {
-      this.payment.expense_id = null;
+      this.payment.expenseId = 0;
       this.expenseErrorMessage = 'Expense Id must be positive.';
       this.isExpenseIdInvalid = true;
     } else {
-      this.payment.expense_id = num;
+      this.payment.expenseId = num;
       this.isExpenseIdInvalid = false;
       this.expenseErrorMessage = '';
     }
@@ -76,12 +73,12 @@ export class EditPaymentComponent {
 
     this.isNameInvalid = !this.payment.name;
     this.isStatusInvalid = !this.payment.status;
-    this.isDateInvalid = !this.payment.payment_date;
-    this.isExpenseIdInvalid = !this.payment.expense_id || this.payment.expense_id <= 0;
+    this.isDateInvalid = !this.payment.paymentDate;
+    this.isExpenseIdInvalid = !this.payment.expenseId || this.payment.expenseId <= 0;
 
-    if (this.isExpenseIdInvalid && !this.payment.expense_id) {
+    if (this.isExpenseIdInvalid && !this.payment.expenseId) {
       this.expenseErrorMessage = 'Please provide a valid expense id.';
-    } else if (this.isExpenseIdInvalid && this.payment.expense_id! <= 0) {
+    } else if (this.isExpenseIdInvalid && this.payment.expenseId! <= 0) {
       this.expenseErrorMessage = 'Expense Id must be positive.';
     }
 
@@ -89,16 +86,27 @@ export class EditPaymentComponent {
       return;
     }
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Payment updated successfully!',
-      life: 3000,
+    //TODO: add call to backend + error handling
+    this.paymentService.updatePayment(this.payment.id!, this.payment).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Payment updated successfully!',
+          life: 3000,
+        });
+        setTimeout(() => {
+          this.router.navigate(['/all-payments']);
+        }, 1200);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update payment.',
+        });
+      },
     });
-
-    setTimeout(() => {
-      this.router.navigate(['/all-payments']);
-    }, 1200);
   }
 
   cancelEdit() {

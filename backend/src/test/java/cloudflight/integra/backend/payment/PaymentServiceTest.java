@@ -11,7 +11,6 @@ import cloudflight.integra.backend.entity.validation.ValidationException;
 import cloudflight.integra.backend.exception.NotFoundException;
 import cloudflight.integra.backend.repository.PaymentRepository;
 import cloudflight.integra.backend.service.impl.PaymentServiceImpl;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -41,14 +40,12 @@ class PaymentServiceTest {
         payment = new Payment();
         payment.setId(1L);
         payment.setName("Rent Payment");
-        payment.setAmount(BigDecimal.valueOf(500));
         payment.setStatus(Payment.StatusEnum.PENDING);
         payment.setPaymentDate(LocalDate.of(2025, 9, 22));
 
         paymentDTO = new PaymentDTO();
         paymentDTO.setId(payment.getId());
         paymentDTO.setName(payment.getName());
-        paymentDTO.setAmount(payment.getAmount());
         paymentDTO.setStatus(payment.getStatus());
         paymentDTO.setPaymentDate(payment.getPaymentDate());
         paymentDTO.setExpenseId(10L);
@@ -113,7 +110,6 @@ class PaymentServiceTest {
 
     @Test
     void testAddPaymentWithInvalidAmount() {
-        paymentDTO.setAmount(BigDecimal.valueOf(-100));
         doThrow(new ValidationException("Amount must be greater than 0"))
                 .when(paymentValidator)
                 .validate(paymentDTO);

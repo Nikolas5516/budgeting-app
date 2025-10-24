@@ -3,20 +3,13 @@ import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Checkbox } from 'primeng/checkbox';
-import {ToastModule} from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { MessageModule } from 'primeng/message';
 import { SidebarPaymentComponent } from '../sidebar/sidebar.component';
 import { MenuService } from '../services/menu.service';
-
-
-interface Payment {
-  name: string;
-  status: '' | 'pending' | 'paid' | 'failed';
-  payment_date: string;
-  expense_id: number | null;
-}
+import { PaymentControllerService, PaymentDTO } from '../../../api';
 
 @Component({
   selector: 'app-add-payment',
@@ -27,7 +20,7 @@ interface Payment {
   styleUrls: ['./add-payments.component.css']
 })
 export class AddPaymentComponent {
-  payment: Payment = { name: '', status: '', payment_date: '', expense_id: null };
+  payment: PaymentDTO = {};
   addMore = false;
   submitted = false;
 
@@ -37,11 +30,15 @@ export class AddPaymentComponent {
   isExpenseIdInvalid = false;
   expenseErrorMessage = '';
 
-
-  constructor(private router: Router, private messageService: MessageService, private menuService: MenuService) {}
+  constructor(
+    private router: Router,
+    private messageService: MessageService,
+    private menuService: MenuService,
+    private paymentService: PaymentControllerService
+  ) {}
 
   onNameInput(event: Event) {
-    this.isNameInvalid = !this.payment.name.trim();
+    this.isNameInvalid = !this.payment.name?.trim();
   }
 
   onStatusChange() {
@@ -49,7 +46,7 @@ export class AddPaymentComponent {
   }
 
   onDateInput(event: Event) {
-    this.isDateInvalid = !this.payment.payment_date;
+    this.isDateInvalid = !this.payment.paymentDate;
   }
 
   onExpenseIdInput(event: Event) {
@@ -58,15 +55,15 @@ export class AddPaymentComponent {
     const num = Number(value);
 
     if (!value) {
-      this.payment.expense_id = null;
+      this.payment.expenseId = 0;
       this.expenseErrorMessage = 'Please provide a valid expense id.';
       this.isExpenseIdInvalid = true;
     } else if (isNaN(num) || num <= 0) {
-      this.payment.expense_id = null;
+      this.payment.expenseId = 0;
       this.expenseErrorMessage = 'Expense Id must be positive.';
       this.isExpenseIdInvalid = true;
     } else {
-      this.payment.expense_id = num;
+      this.payment.expenseId = num;
       this.isExpenseIdInvalid = false;
       this.expenseErrorMessage = '';
     }
@@ -77,42 +74,52 @@ export class AddPaymentComponent {
 
     this.isNameInvalid = !this.payment.name;
     this.isStatusInvalid = !this.payment.status;
-    this.isDateInvalid = !this.payment.payment_date;
-    this.isExpenseIdInvalid = !this.payment.expense_id || this.payment.expense_id <= 0;
+    this.isDateInvalid = !this.payment.paymentDate;
+    this.isExpenseIdInvalid = !this.payment.expenseId || this.payment.expenseId <= 0;
 
-    if (this.isExpenseIdInvalid && !this.payment.expense_id) {
+    if (this.isExpenseIdInvalid && !this.payment.expenseId) {
       this.expenseErrorMessage = 'Please provide a valid expense id.';
-    } else if (this.isExpenseIdInvalid && this.payment.expense_id! <= 0) {
+    } else if (this.isExpenseIdInvalid && this.payment.expenseId! <= 0) {
       this.expenseErrorMessage = 'Expense Id must be positive.';
     }
-
 
     if (this.isNameInvalid || this.isStatusInvalid || this.isDateInvalid || this.isExpenseIdInvalid) {
       return;
     }
 
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Payment saved successfully!',
-      life: 3000,
+    // ✅ Trimiterea cererii către backend
+    this.paymentService.createPayment(this.payment).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Payment added successfully!',
+          life: 3000,
+        });
+
+        setTimeout(() => {
+          if (this.addMore) {
+            form.resetForm({ name: '', status: '', paymentDate: '', expenseId: '' });
+            this.submitted = false;
+          } else {
+            this.router.navigate(['/all-payments']);
+          }
+        }, 1200);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to add payment. Please check the data.',
+        });
+      },
     });
-
-    setTimeout(() => {
-
-        if (this.addMore) {
-          form.resetForm({ name: '', status: '', payment_date: '', expense_id: '' });
-          this.submitted = false;
-          return;
-        }
-        else if(this.submitted==true)
-          this.router.navigate(['/all-payments']);
-    }, 1200);
   }
 
   cancelEdit() {
     this.router.navigate(['/all-payments']);
   }
+
   onMenuSelect(label: string) {
     this.menuService.navigate(label);
   }
