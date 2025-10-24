@@ -86,7 +86,6 @@ export class EditPaymentComponent {
       return;
     }
 
-    //TODO: add call to backend + error handling
     this.paymentService.updatePayment(this.payment.id!, this.payment).subscribe({
       next: () => {
         this.messageService.add({
