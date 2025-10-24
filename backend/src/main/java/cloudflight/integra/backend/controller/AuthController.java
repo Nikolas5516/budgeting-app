@@ -7,6 +7,12 @@ import cloudflight.integra.backend.dto.auth.RegisterRequest;
 import cloudflight.integra.backend.entity.User;
 import cloudflight.integra.backend.security.JwtUtils;
 import cloudflight.integra.backend.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -46,8 +52,19 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Operation(summary = "Register a new user", description = "Creates a new user account")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "User registered successfully",
+                        content =
+                                @Content(mediaType = "application/json", schema = @Schema(implementation = Map.class))),
+                @ApiResponse(responseCode = "400", description = "Invalid registration data", content = @Content)
+            })
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(
+            @Parameter(description = "User registration data") @Valid @RequestBody RegisterRequest request) {
 
         User user = new User(
                 null,
@@ -64,8 +81,21 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Login user", description = "Authenticates user and returns JWT token")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Login successful",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = AuthenticationResponse.class))),
+                @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content)
+            })
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<?> login(
+            @Parameter(description = "User login credentials") @RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
