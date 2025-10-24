@@ -13,6 +13,7 @@ import 'primeicons/primeicons.css';
 
 import { App } from './app/app';
 import { routes } from './app/app.routes';
+import LaraLightTeal from '@primeuix/themes/aura';
 
 bootstrapApplication(App, {
   providers: [
@@ -34,7 +35,7 @@ bootstrapApplication(App, {
     importProvidersFrom(FormsModule),
     providePrimeNG({
       theme: {
-        preset: Lara,
+        preset: LaraLightTeal,
       },
     }),
   ],

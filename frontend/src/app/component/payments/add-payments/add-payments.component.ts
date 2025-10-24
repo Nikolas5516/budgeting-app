@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Checkbox } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
@@ -9,36 +10,19 @@ import { MessageModule } from 'primeng/message';
 import { SidebarPaymentComponent } from '../sidebar/sidebar.component';
 import { MenuService } from '../services/menu.service';
 import { PaymentControllerService, PaymentDTO } from '../../../api';
-import { CheckboxModule } from 'primeng/checkbox';
-
 
 @Component({
   selector: 'app-add-payment',
   standalone: true,
-  imports: [
-    FormsModule,
-    CommonModule,
-    ToastModule,
-    ButtonModule,
-    MessageModule,
-    SidebarPaymentComponent,
-    CheckboxModule
-  ],
+  imports: [FormsModule, CommonModule, Checkbox, ToastModule, ButtonModule, MessageModule, SidebarPaymentComponent],
   providers: [MessageService],
   templateUrl: './add-payments.component.html',
   styleUrls: ['./add-payments.component.css']
 })
 export class AddPaymentComponent {
-  payment: PaymentDTO = {
-    name: '',
-    status: undefined,
-    paymentDate: '',
-    expenseId: undefined
-  };
-
+  payment: PaymentDTO = {};
   addMore = false;
   submitted = false;
-  isLoading = false;
 
   isNameInvalid = false;
   isStatusInvalid = false;
@@ -53,7 +37,7 @@ export class AddPaymentComponent {
     private paymentService: PaymentControllerService
   ) {}
 
-  onNameInput() {
+  onNameInput(event: Event) {
     this.isNameInvalid = !this.payment.name?.trim();
   }
 
@@ -61,7 +45,7 @@ export class AddPaymentComponent {
     this.isStatusInvalid = !this.payment.status;
   }
 
-  onDateInput() {
+  onDateInput(event: Event) {
     this.isDateInvalid = !this.payment.paymentDate;
   }
 
@@ -71,10 +55,12 @@ export class AddPaymentComponent {
     const num = Number(value);
 
     if (!value) {
-      this.expenseErrorMessage = 'Please provide a valid expense ID.';
+      this.payment.expenseId = 0;
+      this.expenseErrorMessage = 'Please provide a valid expense id.';
       this.isExpenseIdInvalid = true;
     } else if (isNaN(num) || num <= 0) {
-      this.expenseErrorMessage = 'Expense ID must be a positive number.';
+      this.payment.expenseId = 0;
+      this.expenseErrorMessage = 'Expense Id must be positive.';
       this.isExpenseIdInvalid = true;
     } else {
       this.payment.expenseId = num;
@@ -83,46 +69,27 @@ export class AddPaymentComponent {
     }
   }
 
-
   savePayment(form: NgForm) {
     this.submitted = true;
 
-
-    this.isNameInvalid = !this.payment.name?.trim();
+    this.isNameInvalid = !this.payment.name;
     this.isStatusInvalid = !this.payment.status;
     this.isDateInvalid = !this.payment.paymentDate;
     this.isExpenseIdInvalid = !this.payment.expenseId || this.payment.expenseId <= 0;
 
     if (this.isExpenseIdInvalid && !this.payment.expenseId) {
-      this.expenseErrorMessage = 'Please provide a valid expense ID.';
+      this.expenseErrorMessage = 'Please provide a valid expense id.';
     } else if (this.isExpenseIdInvalid && this.payment.expenseId! <= 0) {
-      this.expenseErrorMessage = 'Expense ID must be positive.';
+      this.expenseErrorMessage = 'Expense Id must be positive.';
     }
 
     if (this.isNameInvalid || this.isStatusInvalid || this.isDateInvalid || this.isExpenseIdInvalid) {
       return;
     }
 
-    if (this.payment.paymentDate && typeof this.payment.paymentDate !== 'string') {
-      this.payment.paymentDate = (this.payment.paymentDate as any)
-        .toISOString()
-        .split('T')[0];
-    }
-
-
-    const payload: PaymentDTO = {
-      name: this.payment.name!.trim(),
-      status: this.payment.status!,
-      paymentDate: this.payment.paymentDate!,
-      expenseId: this.payment.expenseId!
-    };
-
-    console.log('📤 Sending payment payload:', payload);
-    this.isLoading = true;
-
-    this.paymentService.createPayment(payload).subscribe({
+    // ✅ Trimiterea cererii către backend
+    this.paymentService.createPayment(this.payment).subscribe({
       next: () => {
-        this.isLoading = false;
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
@@ -132,37 +99,26 @@ export class AddPaymentComponent {
 
         setTimeout(() => {
           if (this.addMore) {
-            form.resetForm({
-              name: '',
-              status: '',
-              paymentDate: '',
-              expenseId: ''
-            });
+            form.resetForm({ name: '', status: '', paymentDate: '', expenseId: '' });
             this.submitted = false;
           } else {
             this.router.navigate(['/all-payments']);
           }
         }, 1200);
       },
-      error: (err) => {
-        this.isLoading = false;
-        console.error('Payment creation failed:', err);
-
+      error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to add payment. Please check the data or try again later.',
-          life: 4000,
+          detail: 'Failed to add payment. Please check the data.',
         });
       },
     });
   }
 
-
   cancelEdit() {
     this.router.navigate(['/all-payments']);
   }
-
 
   onMenuSelect(label: string) {
     this.menuService.navigate(label);

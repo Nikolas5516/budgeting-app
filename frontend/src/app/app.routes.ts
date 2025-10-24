@@ -9,11 +9,11 @@ import { IncomeComponent } from './component/incomes/income_overview/income';
 import {MainLayoutComponent} from './component/main-layout/main-layout';
 
 //import { TestComponent } from './component/test-component/test-component';
-import {OverviewComponent} from './payments/overview/overview.component';
-import {AllPaymentsComponent} from './payments/all/all-payments.component';
-import {AddPaymentComponent} from './payments/add/add-payments.component';
-import {EditPaymentComponent} from './payments/edit/edit-payments.component';
-import {SidebarPaymentComponent} from './payments/sidebar/sidebar.component';
+import {OverviewComponent} from './component/payments/overview-payments/overview.component';
+import {AllPaymentsComponent} from './component/payments/list-payments/all-payments.component';
+import {AddPaymentComponent} from './component/payments/add-payments/add-payments.component';
+import {EditPaymentComponent} from './component/payments/edit-payments/edit-payments.component';
+import {SidebarPaymentComponent} from './component/payments/sidebar/sidebar.component';
 
 
 export const routes: Routes = [

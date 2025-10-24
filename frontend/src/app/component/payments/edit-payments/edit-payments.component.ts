@@ -1,33 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { MessageModule } from 'primeng/message';
-import { ToastModule } from 'primeng/toast';
-import { SidebarPaymentComponent } from '../sidebar/sidebar.component';
-import { MenuService } from '../services/menu.service';
-import { PaymentControllerService, PaymentDTO } from '../../../api';
+import {ToastModule} from 'primeng/toast';
+import {SidebarPaymentComponent} from '../sidebar/sidebar.component';
+import {MenuService} from '../services/menu.service';
+import {PaymentControllerService, PaymentDTO} from '../../../api';
+
 
 @Component({
   selector: 'app-edit-payment',
   standalone: true,
-  imports: [
-    FormsModule,
-    CommonModule,
-    ToastModule,
-    ButtonModule,
-    MessageModule,
-    SidebarPaymentComponent,
-  ],
+  imports: [FormsModule, CommonModule, ToastModule, ButtonModule, MessageModule, SidebarPaymentComponent],
   providers: [MessageService],
   templateUrl: './edit-payments.component.html',
-  styleUrls: ['./edit-payments.component.css'],
+  styleUrls: ['./edit-payments.component.css']
 })
-export class EditPaymentComponent implements OnInit {
+export class EditPaymentComponent {
   payment: PaymentDTO = {};
   submitted = false;
+
 
   isNameInvalid = false;
   isStatusInvalid = false;
@@ -35,73 +30,25 @@ export class EditPaymentComponent implements OnInit {
   isExpenseIdInvalid = false;
   expenseErrorMessage = '';
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private messageService: MessageService,
-    private menuService: MenuService,
-    private paymentService: PaymentControllerService
-  ) {}
 
-  ngOnInit(): void {
-    const nav = history.state;
-
-    if (nav && nav.payment) {
-      this.payment = { ...nav.payment };
-      console.log('Loaded payment from navigation state:', this.payment);
-      return;
-    }
-
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.loadPaymentById(+id);
-    }
+  constructor(private router: Router, private messageService: MessageService, private menuService: MenuService, private paymentService: PaymentControllerService) {
   }
 
 
-  loadPaymentById(id: number): void {
-    this.paymentService
-      .getPaymentById(id, 'body', false, { httpHeaderAccept: '*/*' })
-      .subscribe({
-        next: (data: any) => {
-          if (data instanceof Blob) {
-            data.text().then((text) => {
-              try {
-                this.payment = JSON.parse(text);
-              } catch (e) {
-                console.error('Error parsing payment', e);
-              }
-            });
-          } else {
-            this.payment = data;
-          }
-        },
-        error: (err) => {
-          console.error('Failed to load payment', err);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Could not load payment data.',
-          });
-          this.router.navigate(['/all-payments']);
-        },
-      });
-  }
 
-
-  onNameInput(): void {
+  onNameInput(event: Event) {
     this.isNameInvalid = !this.payment.name?.trim();
   }
 
-  onStatusChange(): void {
+  onStatusChange() {
     this.isStatusInvalid = !this.payment.status;
   }
 
-  onDateInput(): void {
+  onDateInput(event: Event) {
     this.isDateInvalid = !this.payment.paymentDate;
   }
 
-  onExpenseIdInput(event: Event): void {
+  onExpenseIdInput(event: Event) {
     const input = event.target as HTMLInputElement;
     const value = input.value.trim();
     const num = Number(value);
@@ -121,12 +68,10 @@ export class EditPaymentComponent implements OnInit {
     }
   }
 
-
-  savePayment(form: NgForm): void {
+  savePayment(form: NgForm) {
     this.submitted = true;
 
-
-    this.isNameInvalid = !this.payment.name?.trim();
+    this.isNameInvalid = !this.payment.name;
     this.isStatusInvalid = !this.payment.status;
     this.isDateInvalid = !this.payment.paymentDate;
     this.isExpenseIdInvalid = !this.payment.expenseId || this.payment.expenseId <= 0;
@@ -141,6 +86,7 @@ export class EditPaymentComponent implements OnInit {
       return;
     }
 
+    //TODO: add call to backend + error handling
     this.paymentService.updatePayment(this.payment.id!, this.payment).subscribe({
       next: () => {
         this.messageService.add({
@@ -149,10 +95,11 @@ export class EditPaymentComponent implements OnInit {
           detail: 'Payment updated successfully!',
           life: 3000,
         });
-        setTimeout(() => this.router.navigate(['/all-payments']), 1200);
+        setTimeout(() => {
+          this.router.navigate(['/all-payments']);
+        }, 1200);
       },
-      error: (err) => {
-        console.error('Failed to update payment', err);
+      error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -162,11 +109,12 @@ export class EditPaymentComponent implements OnInit {
     });
   }
 
-  cancelEdit(): void {
+  cancelEdit() {
     this.router.navigate(['/all-payments']);
   }
 
-  onMenuSelect(label: string): void {
+  onMenuSelect(label: string) {
     this.menuService.navigate(label);
   }
+
 }
