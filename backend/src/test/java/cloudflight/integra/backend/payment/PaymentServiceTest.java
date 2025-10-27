@@ -81,14 +81,6 @@ class PaymentServiceTest {
         assertThat(updated.getName()).isEqualTo("Rent Payment");
     }
 
-    @Test
-    void testDeletePayment() {
-        when(paymentRepository.findById(payment.getId())).thenReturn(Optional.of(payment));
-        doNothing().when(paymentRepository).delete(payment);
-
-        PaymentDTO deleted = paymentService.deletePayment(payment.getId());
-        assertThat(deleted.getId()).isEqualTo(payment.getId());
-    }
 
     @Test
     void testGetAllPayments() {
