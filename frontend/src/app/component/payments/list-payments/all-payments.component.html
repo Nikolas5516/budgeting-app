@@ -15,9 +15,9 @@
             <input type="text" [(ngModel)]="filterName" placeholder="Filter by Name">
             <select [(ngModel)]="filterStatus">
               <option value="">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="paid">Paid</option>
-              <option value="failed">Failed</option>
+              <option value="pending">PENDING</option>
+              <option value="paid">PAID</option>
+              <option value="failed">FAILED</option>
             </select>
           </div>
 
@@ -41,12 +41,17 @@
           <span>{{ payment.status }}</span>
           <span>{{ payment.paymentDate }}</span>
           <span>
-            <button class="button edit" (click)="editPayment(payment)"><i class="pi pi-pencil"></i>Edit</button>
-             <button class="button delete"> <i class="pi pi-trash"></i>Delete</button>
+            <button type="button" class="button edit" (click)="editPayment(i)"><i class="pi pi-pencil"></i>Edit</button>
+            <button type="button" class="button delete" (click)="confirmDelete(i)">  <i class="pi pi-trash"></i>Delete</button>
           </span>
         </div>
       </div>
 
     </div>
+    <p-confirmDialog></p-confirmDialog>
+    <p-toast  position="top-left"
+              style="margin-left: 600px; margin-bottom: 140px;"></p-toast>
   </div>
+
 </div>
+

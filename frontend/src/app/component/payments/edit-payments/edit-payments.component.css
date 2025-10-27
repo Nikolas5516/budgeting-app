@@ -147,6 +147,11 @@ body, .app-container {
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
 }
+::ng-deep .p-toast .p-toast-message-error .p-toast-detail {
+  color: black !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
 
 
 .button{

@@ -2,6 +2,8 @@ package cloudflight.integra.backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "payment")
@@ -13,6 +15,7 @@ public class Payment {
 
     @OneToOne(optional = false)
     @JoinColumn(name = "expense_id", nullable = false) // Asigură că fiecare Payment trebuie să aibă un Expense
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Expense expense;
 
     @Column(nullable = false)

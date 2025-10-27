@@ -9,6 +9,7 @@ import LaraLightTeal from '@primeuix/themes/aura';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {AuthInterceptor} from './interceptors/auth.interceptor';
 import {ErrorInterceptor} from './interceptors/error.interceptor';
+import {BASE_PATH} from './api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -33,6 +34,7 @@ export const appConfig: ApplicationConfig = {
 
     importProvidersFrom(ToastModule),
 
-    MessageService
+    MessageService,
+    { provide: BASE_PATH, useValue: '' }
   ]
 };
