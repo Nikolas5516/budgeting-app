@@ -81,7 +81,6 @@ class PaymentServiceTest {
         assertThat(updated.getName()).isEqualTo("Rent Payment");
     }
 
-
     @Test
     void testGetAllPayments() {
         when(paymentRepository.findAll()).thenReturn(List.of(payment));
