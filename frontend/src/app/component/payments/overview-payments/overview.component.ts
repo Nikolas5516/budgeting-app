@@ -60,7 +60,7 @@ export class OverviewComponent implements OnInit {
       .getAllPayments('body', false, { httpHeaderAccept: 'application/json' })
       .subscribe({
         next: (data: any) => {
-          const handlePayments = (payments: any[]) => {
+          const handlePayments = (payments: PaymentDTO[]) => {
             const sorted = payments.sort(
               (a, b) =>
                 new Date(b.paymentDate as any).getTime() -
@@ -73,20 +73,10 @@ export class OverviewComponent implements OnInit {
             this.loading = false;
           };
 
-          if (data instanceof Blob) {
-            data.text().then((text) => {
-              try {
-                const json = JSON.parse(text);
-                handlePayments(json);
-              } catch (e) {
-                console.error('Failed to parse Blob response', e);
-                this.loading = false;
-              }
-            });
-          } else if (Array.isArray(data)) {
+          if (Array.isArray(data)) {
             handlePayments(data);
           } else {
-            console.warn('Unexpected API response format:', data);
+            console.warn('Unexpected API response format. Expected array:', data);
             this.loading = false;
           }
         },

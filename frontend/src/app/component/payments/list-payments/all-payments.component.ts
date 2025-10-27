@@ -6,7 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { SidebarPaymentComponent } from '../sidebar/sidebar.component';
 import { MenuService } from '../services/menu.service';
 import { PaymentControllerService, PaymentDTO } from '../../../api';
-import Swal from 'sweetalert2';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -41,6 +40,22 @@ export class AllPaymentsComponent implements OnInit {
     this.loadPayments();
   }
 
+  // Metodă care aplică sortarea DESC după paymentDate
+  private sortPayments(paymentsArray: PaymentDTO[]): PaymentDTO[] {
+    // Sortarea DESC după data de plată
+    paymentsArray.sort((a, b) => {
+      // Convertim string-urile de dată (ex: '2025-10-24') în obiecte Date
+      // getTime() returnează timestamp-ul în milisecunde pentru o comparație ușoară
+      const dateA = new Date(a.paymentDate!).getTime();
+      const dateB = new Date(b.paymentDate!).getTime();
+
+      // Pentru ordine DESC (descrescătoare / cel mai nou primul):
+      // Dacă dateB > dateA, returnează pozitiv, punând B înaintea lui A.
+      return dateB - dateA;
+    });
+    return paymentsArray;
+  }
+
   loadPayments(): void {
     this.loading = true;
     this.paymentService
@@ -49,30 +64,24 @@ export class AllPaymentsComponent implements OnInit {
       })
       .subscribe({
         next: (data: any) => {
-          if (data instanceof Blob) {
-            data.text().then((text) => {
-              try {
-                const json = JSON.parse(text);
-                this.payments = json;
-                console.log('Parsed payments:', json);
-              } catch {
-                console.warn('Unexpected Blob content', text);
-                this.payments = [];
-              }
-            });
-          } else if (Array.isArray(data)) {
-            this.payments = data;
+          if (Array.isArray(data)) {
+            this.payments = this.sortPayments(data);
           } else {
-            console.warn('Unexpected API response format:', data);
+            console.warn('Unexpected API response format. Expected array:', data);
+            this.payments = [];
           }
           this.loading = false;
         },
         error: (err) => {
           console.error('Failed to load payments', err);
           this.loading = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load payments. Please try again.',
+          });
         },
       });
-
   }
 
   editPayment(index: number) {
@@ -103,7 +112,7 @@ export class AllPaymentsComponent implements OnInit {
       accept: () => {
         this.paymentService.deletePayment(payment.id!).subscribe({
           next: () => {
-            this.payments.splice(index, 1);
+            this.loadPayments();
             this.messageService.add({
               severity: 'success',
               summary: 'Deleted',
