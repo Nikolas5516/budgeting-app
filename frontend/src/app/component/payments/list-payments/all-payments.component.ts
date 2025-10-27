@@ -45,7 +45,7 @@ export class AllPaymentsComponent implements OnInit {
     this.loading = true;
     this.paymentService
       .getAllPayments('body', false, {
-        httpHeaderAccept: '*/*'
+        httpHeaderAccept: 'application/json'
       })
       .subscribe({
         next: (data: any) => {

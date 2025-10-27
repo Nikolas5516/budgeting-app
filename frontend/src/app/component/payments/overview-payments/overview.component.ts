@@ -57,7 +57,7 @@ export class OverviewComponent implements OnInit {
   loadPayments(): void {
     this.loading = true;
     this.paymentService
-      .getAllPayments('body', false, { httpHeaderAccept: '*/*' })
+      .getAllPayments('body', false, { httpHeaderAccept: 'application/json' })
       .subscribe({
         next: (data: any) => {
           const handlePayments = (payments: any[]) => {
