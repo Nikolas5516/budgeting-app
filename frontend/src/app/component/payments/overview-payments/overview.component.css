@@ -93,8 +93,8 @@ body, .app-container {
 }
 
 .total-payments { background: linear-gradient(135deg, #F3E6FF, #E6CCF2); color: #4B0082; }
-.card-payments { background: linear-gradient(135deg, #E6CCF2, #D1B3FF); color: #4B0082; }
-.transfer-payments { background: linear-gradient(135deg, #D1B3FF, #C080FF); color: #4B0082; }
+.paid-payments{ background: linear-gradient(135deg, #E6CCF2, #D1B3FF); color: #4B0082; }
+.pending-payments { background: linear-gradient(135deg, #D1B3FF, #C080FF); color: #4B0082; }
 
 .card h3 { margin: 0; font-size: 16px; }
 .card p { margin-top: 6px; font-weight: 600; font-size: 14px; }
