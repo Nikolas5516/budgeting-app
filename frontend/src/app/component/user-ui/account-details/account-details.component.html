@@ -1,0 +1,39 @@
+<div class="card">
+  <h3>Account Details</h3>
+  <div class="details-grid">
+    <div class="detail">
+      <i class="pi pi-user"></i>
+      <div>
+        <strong>Username</strong>
+        <p>{{ getUserDisplayName() }}</p>
+      </div>
+    </div>
+    <div class="detail">
+      <i class="pi pi-envelope"></i>
+      <div>
+        <strong>Email</strong>
+        <p>{{ getUserEmail() }}</p>
+      </div>
+    </div>
+    <div class="detail">
+      <i class="pi pi-calendar"></i>
+      <div>
+        <strong>Member Since</strong>
+        <p>{{ getUserCreationDate() }}</p>
+      </div>
+    </div>
+    <div class="detail">
+      <i class="pi pi-dollar"></i>
+      <div>
+        <strong>Balance</strong>
+        <p>{{ getUserBalance() }}</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button (click)="onChangePassword()">
+        <i class="pi pi-lock"></i>
+        Change Password
+      </button>
+    </div>
+  </div>
+</div>

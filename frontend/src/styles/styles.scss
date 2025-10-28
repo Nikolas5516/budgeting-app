@@ -3,7 +3,7 @@
 @use './abstracts/mixins';
 @use './abstracts/functions';
 
-// Vendors (keeps CSS imports inside the partial)
+// Vendors
 @use './vendors/normalize';
 
 // Base
@@ -20,11 +20,14 @@
 @use './components/buttons';
 @use './components/forms';
 @use './components/cards';
+@use './components/dialogs';
+@use './components/user-profile';
 
 // Pages
 @use './pages/login';
 @use './pages/register';
 @use './pages/user-ui';
+@use './pages/sidebar';
 
 // Themes
 @use './themes/light';

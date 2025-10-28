@@ -1,141 +1,52 @@
 <div class="app-container">
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="logo">
-      <div class="logo-shape">
-        <i class="pi pi-wallet"></i>
-      </div>
-      <h1>Money Mind</h1>
-    </div>
+  <app-sidebar (menuSelect)="onMenuSelect($event)"></app-sidebar>
 
-    <!-- Buton hamburger pentru mobil -->
-    <div class="menu-toggle" (click)="toggleMenu()">
-      <i class="pi pi-bars"></i>
-    </div>
-
-    <ul class="menu" [class.show]="menuShown">
-      <li><i class="pi pi-home"></i> Home</li>
-      <li class="active"><i class="pi pi-user"></i> User</li>
-      <li><i class="pi pi-users"></i> Shared Account</li>
-      <li><i class="pi pi-dollar"></i> Incomes</li>
-      <li><i class="pi pi-minus-circle"></i> Expenses</li>
-      <li><i class="pi pi-credit-card"></i> Payments</li>
-      <li><i class="pi pi-money-bill"></i> Savings</li>
-      <li><i class="pi pi-cog"></i> Settings</li>
-      <li><i class="pi pi-question-circle"></i> Help</li>
-      <li (click)="logout()" style="cursor: pointer;"><i class="pi pi-sign-out"></i> Log out</li>
-    </ul>
-  </div>
-
-  <!-- Content -->
   <div class="content">
     <div class="page-wrapper">
-      <!-- Loading state -->
-      <div *ngIf="isLoading" class="loading-container">
-        <div class="loading-spinner">
-          <i class="pi pi-spin pi-spinner"></i>
-          <p>Loading user data...</p>
-        </div>
-      </div>
+      <app-data-state
+        [isLoading]="isLoading"
+        [errorMessage]="errorMessage"
+        (retry)="loadUserData()">
+      </app-data-state>
 
-      <!-- Error state -->
-      <div *ngIf="errorMessage && !isLoading" class="error-container">
-        <div class="error-message">
-          <i class="pi pi-exclamation-triangle"></i>
-          <p>{{ errorMessage }}</p>
-          <button (click)="loadUserData()" class="retry-btn">Retry</button>
-        </div>
-      </div>
-
-      <!-- User data content -->
       <div *ngIf="!isLoading && !errorMessage && user">
-        <!-- User header card -->
-        <div class="card user-header">
-          <div class="avatar">
-            <i class="pi pi-user"></i>
-          </div>
-          <div>
-            <h2>{{ getUserDisplayName() }}</h2>
-            <p>Standard User • {{ getUserEmail() }}</p>
-          </div>
-          <button class="edit-btn">Edit Profile</button>
-        </div>
+        <app-user-profile-card
+          [user]="user"
+          (editClicked)="openEditProfile()">
+        </app-user-profile-card>
 
-        <!-- Account details -->
-        <div class="card">
-          <h3>Account Details</h3>
-          <div class="details-grid">
-            <div class="detail">
-              <i class="pi pi-user"></i>
-              <div>
-                <strong>Username</strong>
-                <p>{{ getUserDisplayName() }}</p>
-              </div>
-            </div>
-            <div class="detail">
-              <i class="pi pi-envelope"></i>
-              <div>
-                <strong>Email</strong>
-                <p>{{ getUserEmail() }}</p>
-              </div>
-            </div>
-            <div class="detail">
-              <i class="pi pi-calendar"></i>
-              <div>
-                <strong>Created At</strong>
-                <p>{{ getUserCreationDate() }}</p>
-              </div>
-            </div>
-            <div class="detail">
-              <i class="pi pi-dollar"></i>
-              <div>
-                <strong>Balance</strong>
-                <p>{{ getUserBalance() }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick settings -->
-        <div class="card">
-          <h3>Quick Actions</h3>
-          <div class="actions">
-            <button><i class="pi pi-lock"></i> Change Password</button>
-            <button><i class="pi pi-desktop"></i> Manage Devices</button>
-            <button><i class="pi pi-bell"></i> Notifications</button>
-          </div>
-        </div>
-
-        <!-- Recent activity -->
-        <div class="card">
-          <h3>Recent Activity</h3>
-          <div class="activity-feed">
-            <div class="activity-item">
-              <i class="pi pi-sign-in"></i>
-              <div>
-                <p>Logged in successfully</p>
-                <span>Just now</span>
-              </div>
-            </div>
-            <div class="activity-item">
-              <i class="pi pi-user"></i>
-              <div>
-                <p>Profile accessed</p>
-                <span>Just now</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- No user data state -->
-      <div *ngIf="!isLoading && !errorMessage && !user" class="no-data-container">
-        <div class="no-data-message">
-          <i class="pi pi-user"></i>
-          <p>No user data available</p>
-          <button (click)="loadUserData()" class="retry-btn">Reload</button>
-        </div>
+        <app-account-details
+          [user]="user"
+          (changePasswordClicked)="openChangePassword()">
+        </app-account-details>
       </div>
     </div>
   </div>
+
+  <app-edit-profile
+    [isOpen]="isEditingProfile"
+    [isSaving]="isSaving"
+    [user]="user"
+    (save)="saveProfile($event)"
+    (close)="closeEditProfile()">
+  </app-edit-profile>
+
+  <app-change-password
+    [isOpen]="isChangingPassword"
+    [isSaving]="isSaving"
+    (save)="savePassword($event)"
+    (close)="closeChangePassword()">
+  </app-change-password>
+
+  <app-confirm-dialog
+    [isOpen]="confirmDialogOpen"
+    [message]="confirmDialogMessage"
+    [header]="confirmDialogHeader"
+    [acceptLabel]="confirmDialogAcceptLabel"
+    [rejectLabel]="confirmDialogRejectLabel"
+    (accept)="onConfirmAccept()"
+    (reject)="onConfirmReject()">
+  </app-confirm-dialog>
+
+  <app-toast [toasts]="toasts"></app-toast>
 </div>

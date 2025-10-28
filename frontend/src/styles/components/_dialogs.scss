@@ -1,0 +1,307 @@
+// === Edit Profile & Change Password Dialog ===
+.ep-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.ep-dialog {
+  width: 100%;
+  max-width: 500px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.ep-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .ep-close {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+  }
+}
+
+.ep-body {
+  padding: 20px;
+}
+
+.ep-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+
+  label {
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  input {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+
+    &:focus {
+      border-color: #6A0DAD;
+    }
+  }
+
+  .ep-error {
+    color: #c62828;
+    font-size: 12px;
+    margin-top: 6px;
+  }
+}
+
+.ep-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+
+  .btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+
+    &.ghost {
+      background: #f0f2f5;
+      color: #333;
+
+      &:hover {
+        background: #e5e7eb;
+      }
+    }
+
+    &.primary {
+      background: #6A0DAD;
+      color: #fff;
+
+      &:hover {
+        background: #8B2DC7;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.ep-divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 20px 0;
+}
+
+.ep-section-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #6A0DAD;
+  margin-bottom: 12px;
+}
+
+// === Confirm Dialog ===
+.cd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  z-index: 1100;
+}
+
+.cd-dialog {
+  width: 100%;
+  max-width: 450px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.cd-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #F9F6FC;
+  border-bottom: 1px solid #E6CCF2;
+
+  i {
+    font-size: 28px;
+    color: #6A0DAD;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #4B0082;
+  }
+}
+
+.cd-body {
+  padding: 20px;
+  background: #fff;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+  }
+}
+
+.cd-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid #E6CCF2;
+  background: #fff;
+
+  .btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &.ghost {
+      background: #f0f2f5;
+      color: #333;
+
+      &:hover {
+        background: #e5e7eb;
+      }
+    }
+
+    &.primary {
+      background: #6A0DAD;
+      color: #fff;
+
+      &:hover {
+        background: #8B2DC7;
+      }
+    }
+  }
+}
+
+// === Toast Notifications ===
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-left: 4px solid;
+  animation: slideIn 0.3s ease-out;
+
+  i {
+    font-size: 20px;
+  }
+
+  .toast-message {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .toast-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+}
+
+.toast-success {
+  border-left-color: #4caf50;
+
+  i:first-child {
+    color: #4caf50;
+  }
+}
+
+.toast-error {
+  border-left-color: #f44336;
+
+  i:first-child {
+    color: #f44336;
+  }
+}
+
+.toast-warning {
+  border-left-color: #ff9800;
+
+  i:first-child {
+    color: #ff9800;
+  }
+}
+
+.toast-info {
+  border-left-color: #2196f3;
+
+  i:first-child {
+    color: #2196f3;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -122,9 +122,25 @@ public class UserController {
         if (!id.equals(userDto.getId())) {
             throw new IllegalArgumentException("ID in path and request body do not match.");
         }
-        User userToUpdate = UserMapper.fromDto(userDto);
-        userToUpdate.setPassword(passwordEncoder.encode(userToUpdate.getPassword()));
-        User updatedUser = userService.updateUser(userToUpdate);
+
+        User existingUser = userService.getUser(id);
+
+        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+            if (userDto.getCurrentPassword() == null || userDto.getCurrentPassword().isEmpty()) {
+                throw new IllegalArgumentException("Current password is required to change password");
+            }
+
+            if (!passwordEncoder.matches(userDto.getCurrentPassword(), existingUser.getPassword())) {
+                throw new IllegalArgumentException("Current password is incorrect");
+            }
+
+            existingUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
+
+        existingUser.setName(userDto.getName());
+        existingUser.setEmail(userDto.getEmail());
+
+        User updatedUser = userService.updateUser(existingUser);
         logger.info("User updated: {}", updatedUser);
         return ResponseEntity.ok(UserMapper.toDto(updatedUser));
     }
