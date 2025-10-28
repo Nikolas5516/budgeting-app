@@ -6,6 +6,7 @@ import cloudflight.integra.backend.dto.auth.AuthenticationResponse;
 import cloudflight.integra.backend.dto.auth.RegisterRequest;
 import cloudflight.integra.backend.entity.User;
 import cloudflight.integra.backend.security.JwtUtils;
+import cloudflight.integra.backend.service.ActivityService;
 import cloudflight.integra.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,18 +39,21 @@ public class AuthController {
     private final UserService userService;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
+    private final ActivityService activityService;
 
     public AuthController(
             AuthenticationManager authenticationManager,
             UserDetailsService userDetailsService,
             UserService userService,
             JwtUtils jwtUtils,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            ActivityService activityService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
+        this.activityService = activityService;
     }
 
     @Operation(summary = "Register a new user", description = "Creates a new user account")
@@ -74,6 +78,10 @@ public class AuthController {
                 BigDecimal.ZERO);
 
         User savedUser = userService.addUser(user);
+
+        // Log registration activity
+        activityService.logActivity(
+                savedUser.getId(), "REGISTRATION", "Account created successfully", "pi pi-user-plus");
 
         Map<String, String> response = new HashMap<>();
 
@@ -100,7 +108,10 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        User user = userService.getUserByEmail(request.getEmail());
         final String token = jwtUtils.generateToken(userDetails);
+
+        activityService.logActivity(user.getId(), "LOGIN", "Logged in", "pi pi-sign-in");
 
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }

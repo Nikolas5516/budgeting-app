@@ -1,20 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import { UserControllerService, UserDTO } from '../../api';
-import { TokenService } from '../../services/token.service';
-import { HttpResponseService } from '../../services/http-response.service';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { UserProfileCardComponent } from './profile-card/profile-card.component';
-import { AccountDetailsComponent } from './account-details/account-details.component';
-import { EditProfileComponent } from './edit-profile/edit-profile.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
-import { DataStateComponent } from './data-state/data-state.component';
-import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import { ToastComponent, Toast } from './toast/toast.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {Subscription} from 'rxjs';
+import {FormsModule} from '@angular/forms';
+import {UserControllerService, UserDTO} from '../../api';
+import {TokenService} from '../../services/token.service';
+import {HttpResponseService} from '../../services/http-response.service';
+import {SidebarComponent} from '../sidebar/sidebar.component';
+import {UserProfileCardComponent} from './profile-card/profile-card.component';
+import {AccountDetailsComponent} from './account-details/account-details.component';
+import {EditProfileComponent} from './edit-profile/edit-profile.component';
+import {ChangePasswordComponent} from './change-password/change-password.component';
+import {DataStateComponent} from './data-state/data-state.component';
+import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
+import {Toast, ToastComponent} from './toast/toast.component';
 import {ToastService} from '../../services/toast.service';
+import {RecentActivityComponent} from './recent-activity/recent-activity.component';
+import {Activity} from '../../models/activity.model';
+import {ActivityService} from '../../services/activity.service';
 
 @Component({
   standalone: true,
@@ -31,7 +34,8 @@ import {ToastService} from '../../services/toast.service';
     ChangePasswordComponent,
     DataStateComponent,
     ConfirmDialogComponent,
-    ToastComponent
+    ToastComponent,
+    RecentActivityComponent
   ]
 })
 export class UserComponent implements OnInit, OnDestroy {
@@ -54,16 +58,20 @@ export class UserComponent implements OnInit, OnDestroy {
   toasts: Toast[] = [];
   private toastSubscription?: Subscription;
 
+  activities: Activity[] = [];
+
   constructor(
     private userController: UserControllerService,
     private tokenService: TokenService,
     private router: Router,
     private toastService: ToastService,
-    private httpResponseService: HttpResponseService
+    private httpResponseService: HttpResponseService,
+    private activityService: ActivityService
   ) {}
 
   ngOnInit(): void {
     this.loadUserData();
+    this.loadRecentActivities();
     this.toastSubscription = this.toastService.toasts$.subscribe(toasts => {
       this.toasts = toasts;
     });
@@ -85,6 +93,13 @@ export class UserComponent implements OnInit, OnDestroy {
     this.userController.getUserByEmail(this.currentUserEmail).subscribe({
       next: (userData) => this.handleUserDataSuccess(userData),
       error: (error) => this.handleUserDataError(error)
+    });
+  }
+
+  loadRecentActivities(): void {
+    this.activityService.getRecentActivities(20).subscribe({
+      next: (data: Activity[]) => this.activities = data,
+      error: (err: any) => console.error('Failed to load activities', err)
     });
   }
 
@@ -218,20 +233,42 @@ export class UserComponent implements OnInit, OnDestroy {
 
     if (shouldLogout) {
       this.toastService.success('Profile updated! Logging out...', 2000);
+      this.loadRecentActivities();
+      this.activityService.getRecentActivities().subscribe({
+        next: (activities) => {
+          this.activities = activities;
+        },
+        error: (error) => {
+          console.error('Failed to reload activities', error);
+        }
+      });
       setTimeout(() => {
         this.logout();
       }, 2000);
     } else {
       this.toastService.success('Profile updated successfully!');
       this.loadUserData();
+      this.loadRecentActivities();
     }
   }
 
   private async handlePasswordUpdateSuccess(): Promise<void> {
     this.isSaving = false;
     this.isChangingPassword = false;
-    this.toastService.success('Password changed successfully!');
+    this.toastService.success('Password changed successfully! Logging out...', 2000);
+    this.activityService.getRecentActivities().subscribe({
+      next: (activities) => {
+        this.activities = activities;
+      },
+      error: (error) => {
+        console.error('Failed to reload activities', error);
+      }
+    });
+    setTimeout(() => {
+      this.logout();
+    }, 2000);
   }
+
 
   private async handleUpdateError(error: any): Promise<void> {
     this.isSaving = false;

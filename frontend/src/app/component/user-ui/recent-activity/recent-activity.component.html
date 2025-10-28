@@ -1,0 +1,18 @@
+<div class="activity-card">
+  <h3>Recent Activity</h3>
+  <div class="activity-list">
+    <div *ngFor="let activity of activities" class="activity-item">
+      <div class="activity-icon">
+        <i [class]="activity.icon"></i>
+      </div>
+      <div class="activity-content">
+        <p class="activity-description">{{ activity.description }}</p>
+        <span class="activity-time">{{ getTimeAgo(activity.createdAt) }}</span>
+      </div>
+    </div>
+    <div *ngIf="activities.length === 0" class="no-activity">
+      <i class="pi pi-inbox"></i>
+      <p>No recent activity</p>
+    </div>
+  </div>
+</div>

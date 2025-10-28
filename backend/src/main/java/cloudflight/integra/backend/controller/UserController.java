@@ -4,6 +4,7 @@ import cloudflight.integra.backend.controller.problem.UserApiErrorResponses;
 import cloudflight.integra.backend.dto.UserDTO;
 import cloudflight.integra.backend.entity.User;
 import cloudflight.integra.backend.mapper.UserMapper;
+import cloudflight.integra.backend.service.ActivityService;
 import cloudflight.integra.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,10 +27,12 @@ public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final ActivityService activityService;
 
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder, ActivityService activityService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.activityService = activityService;
     }
 
     @Operation(summary = "Get all users", description = "Returns a list of all users")
@@ -124,9 +127,11 @@ public class UserController {
         }
 
         User existingUser = userService.getUser(id);
+        boolean passwordChanged = false;
 
         if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
-            if (userDto.getCurrentPassword() == null || userDto.getCurrentPassword().isEmpty()) {
+            if (userDto.getCurrentPassword() == null
+                    || userDto.getCurrentPassword().isEmpty()) {
                 throw new IllegalArgumentException("Current password is required to change password");
             }
 
@@ -135,12 +140,21 @@ public class UserController {
             }
 
             existingUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            passwordChanged = true;
         }
 
         existingUser.setName(userDto.getName());
         existingUser.setEmail(userDto.getEmail());
 
         User updatedUser = userService.updateUser(existingUser);
+
+        // Log activity
+        if (passwordChanged) {
+            activityService.logActivity(id, "PASSWORD_CHANGE", "Changed password", "pi pi-key");
+        } else {
+            activityService.logActivity(id, "PROFILE_UPDATE", "Updated profile info", "pi pi-pencil");
+        }
+
         logger.info("User updated: {}", updatedUser);
         return ResponseEntity.ok(UserMapper.toDto(updatedUser));
     }
