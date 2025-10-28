@@ -3,9 +3,8 @@ package cloudflight.integra.backend.controller;
 import cloudflight.integra.backend.entity.User;
 import cloudflight.integra.backend.entity.UserActivity;
 import cloudflight.integra.backend.service.ActivityService;
-import java.util.List;
-
 import cloudflight.integra.backend.service.UserService;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -35,4 +34,3 @@ public class ActivityController {
         return user.getId();
     }
 }
-
