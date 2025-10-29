@@ -45,7 +45,16 @@ export const routes: Routes = [
   {
     path: 'sidebar-payments',
     component: SidebarPaymentComponent
-  }
+  },
+  {path: 'login', component: LoginComponent},
+  {path: 'register', component: RegisterComponent},
+  {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
+  {path: '', redirectTo: '/login', pathMatch: 'full'},
+  {
+    path: '',
+    redirectTo: 'payments',
+    pathMatch: 'full'
+  },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   // {

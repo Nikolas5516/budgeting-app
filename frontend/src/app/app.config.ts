@@ -10,13 +10,13 @@ import {AuthInterceptor} from './interceptors/auth.interceptor';
 import {ErrorInterceptor} from './interceptors/error.interceptor';
 import {BASE_PATH} from './api';
 import {FormsModule} from '@angular/forms';
-import {BASE_PATH} from './api';
+import LaraLightTeal from '@primeuix/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     providePrimeNG({
       theme: {
-        preset: LaraLightBlue, // theme can be changed
+        preset: LaraLightTeal,
         options: {
           darkModeSelector: null,
         }
