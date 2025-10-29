@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserDTO } from '../../../api';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { UserDTO, UserControllerService } from '../../../api';
+import { Observable, of } from 'rxjs';
+import { map, catchError, debounceTime, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-profile',
@@ -20,7 +22,10 @@ export class EditProfileComponent implements OnInit, OnChanges {
 
   profileForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private userController: UserControllerService
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -36,8 +41,29 @@ export class EditProfileComponent implements OnInit, OnChanges {
   private initForm(): void {
     this.profileForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(80)]],
-      email: ['', [Validators.required, Validators.email, Validators.maxLength(120)]]
+      email: ['',
+        [Validators.required, Validators.email, Validators.maxLength(120)],
+        [this.emailExistsValidator()]
+      ]
     });
+  }
+
+  private emailExistsValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value || control.value === this.user?.email) {
+        return of(null);
+      }
+
+      return of(control.value).pipe(
+        debounceTime(500),
+        switchMap(email =>
+          this.userController.getUserByEmail(email).pipe(
+            map(() => ({ emailExists: true })),
+            catchError(() => of(null))
+          )
+        )
+      );
+    };
   }
 
   private patchFromUser(): void {

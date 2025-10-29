@@ -17,7 +17,9 @@
           <label for="email">Email</label>
           <input id="email" type="email" formControlName="email" />
           <span class="ep-error" *ngIf="hasError('email')">Valid email is required.</span>
+          <span class="ep-error" *ngIf="hasError('email', 'emailExists')">This email is already registered</span>
         </div>
+
 
         <div class="ep-actions">
           <button type="button" class="btn ghost" (click)="onCancel()">Cancel</button>
