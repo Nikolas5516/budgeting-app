@@ -1,12 +1,21 @@
 import {Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {AuthService} from '../../services/auth.service';
 import {Router, RouterLink} from '@angular/router';
 import {InputTextModule} from 'primeng/inputtext';
 import {PasswordModule} from 'primeng/password';
 import {ButtonModule} from 'primeng/button';
 import {MessageModule} from 'primeng/message';
+import {AuthControllerService} from '../../api';
+import {FormUtilsService} from '../../services/form-utils.service';
+import {HttpResponseService} from '../../services/http-response.service';
+
+interface FieldErrors {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 @Component({
   selector: 'app-register',
@@ -24,15 +33,17 @@ import {MessageModule} from 'primeng/message';
   ]
 })
 export class RegisterComponent {
+  // Form data
   name = '';
   email = '';
   password = '';
-  confirm_password = '';
-  error = '';
-  isLoading = false;
-  successMessage = '';
+  confirmPassword = '';
 
-  fieldErrors = {
+  // UI state
+  isLoading = false;
+  errorMessage = '';
+  successMessage = '';
+  fieldErrors: FieldErrors = {
     name: '',
     email: '',
     password: '',
@@ -40,50 +51,94 @@ export class RegisterComponent {
   };
 
   constructor(
-    private auth: AuthService,
-    private router: Router
+    private authController: AuthControllerService,
+    private router: Router,
+    private formUtils: FormUtilsService,
+    private httpResponseService: HttpResponseService
   ) {
-    this.auth.logout();
   }
 
-  register() {
-    // Reset all errors
-    this.resetErrors();
-
-    if (this.password !== this.confirm_password) {
-      this.fieldErrors.confirmPassword = 'Passwords do not match.';
+  /**
+   * Handles form submission for registration
+   */
+  onRegister(): void {
+    const validation = this.formUtils.validateRegisterForm(this.name, this.email, this.password, this.confirmPassword);
+    if (!validation.isValid) {
+      this.fieldErrors = validation.errors;
       return;
     }
 
     this.isLoading = true;
+    this.clearMessages();
 
-    this.auth.register(this.name, this.email, this.password).subscribe({
+    const userData = {
+      name: this.name.trim(),
+      email: this.email.trim(),
+      password: this.password
+    };
+
+    this.authController.register(userData as any).subscribe({
       next: (response) => {
-        this.isLoading = false;
-        this.successMessage = response.message || 'Registration successful!';
-
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000)
+        this.handleRegistrationSuccess(response);
       },
-      error: (err) => {
-        this.isLoading = false;
-
-        if (typeof err === 'string') {
-          this.parseErrors(err);
-        } else if (err.error && typeof err.error === 'string') {
-          this.parseErrors(err.error);
-        } else {
-          this.error = err.message || 'Registration failed. Please try again.';
-        }
-
-        console.error('Register error:', err);
+      error: (error) => {
+        this.handleRegistrationError(error);
       }
     });
   }
 
-  private resetErrors() {
-    this.error = '';
+
+  /**
+   * Handles successful registration
+   * @param response - Authentication response
+   */
+  private async handleRegistrationSuccess(response: any): Promise<void> {
+    this.isLoading = false;
+
+    try {
+      const parsedResponse = await this.httpResponseService.handleResponse(response);
+      this.successMessage = (parsedResponse as any)?.message || 'Registration successful! You can now log in.';
+      this.clearForm();
+
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 2000);
+    } catch (error) {
+      this.errorMessage = 'Failed to process registration response';
+    }
+  }
+
+  /**
+   * Handles registration errors
+   * @param error - Authentication error
+   */
+  private async handleRegistrationError(error: any): Promise<void> {
+    this.isLoading = false;
+
+    try {
+      this.errorMessage = await this.httpResponseService.handleError(error, 'Registration failed. Please try again.');
+    } catch {
+      this.errorMessage = 'Registration failed. Please try again.';
+    }
+
+    this.password = '';
+    this.confirmPassword = '';
+  }
+
+
+  /**
+   * Clears all error and success messages
+   */
+  private clearMessages(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.clearFieldErrors();
+  }
+
+  /**
+   * Clears all field-specific errors
+   */
+  private clearFieldErrors(): void {
     this.fieldErrors = {
       name: '',
       email: '',
@@ -92,32 +147,13 @@ export class RegisterComponent {
     };
   }
 
-  private parseErrors(errorString: string) {
-    // Handle comma-separated field errors from backend
-    if (errorString.includes(': ')) {
-      const errorParts = errorString.split(', ');
-
-      errorParts.forEach(part => {
-        const [field, message] = part.split(': ');
-
-        switch(field.toLowerCase()) {
-          case 'name':
-            this.fieldErrors.name = message;
-            break;
-          case 'email':
-            this.fieldErrors.email = message;
-            break;
-          case 'password':
-            this.fieldErrors.password = message;
-            break;
-          default:
-            // For any other errors, add to general error message
-            this.error += (this.error ? ', ' : '') + part;
-        }
-      });
-    } else {
-      // If not in field: message format, treat as general error
-      this.error = errorString;
-    }
+  /**
+   * Clears all form data
+   */
+  private clearForm(): void {
+    this.name = '';
+    this.email = '';
+    this.password = '';
+    this.confirmPassword = '';
   }
 }

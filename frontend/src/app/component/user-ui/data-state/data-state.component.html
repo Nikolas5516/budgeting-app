@@ -1,0 +1,16 @@
+<!-- Loading state -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-spinner">
+    <i class="pi pi-spin pi-spinner"></i>
+    <p>Loading user data...</p>
+  </div>
+</div>
+
+<!-- Error state -->
+<div *ngIf="errorMessage && !isLoading" class="error-container">
+  <div class="error-message">
+    <i class="pi pi-exclamation-triangle"></i>
+    <p>{{ errorMessage }}</p>
+    <button (click)="onRetry()" class="retry-btn">Retry</button>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="app-container">
+  <app-sidebar (menuSelect)="onMenuSelect($event)"></app-sidebar>
+
+  <div class="content">
+    <div class="page-wrapper">
+      <app-data-state
+        [isLoading]="isLoading"
+        [errorMessage]="errorMessage"
+        (retry)="loadUserData()">
+      </app-data-state>
+
+      <div *ngIf="!isLoading && !errorMessage && user">
+        <app-user-profile-card
+          [user]="user"
+          (editClicked)="openEditProfile()">
+        </app-user-profile-card>
+
+        <app-account-details
+          [user]="user"
+          (changePasswordClicked)="openChangePassword()">
+        </app-account-details>
+
+        <app-recent-activity [activities]="activities"></app-recent-activity>
+      </div>
+    </div>
+  </div>
+
+  <app-edit-profile
+    [isOpen]="isEditingProfile"
+    [isSaving]="isSaving"
+    [user]="user"
+    (save)="saveProfile($event)"
+    (close)="closeEditProfile()">
+  </app-edit-profile>
+
+  <app-change-password
+    [isOpen]="isChangingPassword"
+    [isSaving]="isSaving"
+    (save)="savePassword($event)"
+    (close)="closeChangePassword()">
+  </app-change-password>
+
+  <app-confirm-dialog
+    [isOpen]="confirmDialogOpen"
+    [message]="confirmDialogMessage"
+    [header]="confirmDialogHeader"
+    [acceptLabel]="confirmDialogAcceptLabel"
+    [rejectLabel]="confirmDialogRejectLabel"
+    (accept)="onConfirmAccept()"
+    (reject)="onConfirmReject()">
+  </app-confirm-dialog>
+
+  <app-toast [toasts]="toasts"></app-toast>
+</div>

@@ -8,6 +8,7 @@ import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +32,14 @@ public class IncomeController {
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<IncomeDTO> getIncomeById(@PathVariable Long id) {
         log.debug("Fetching income with id {}", id);
         IncomeDTO income = incomeService.getIncomeById(id);
         return new ResponseEntity<>(income, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<IncomeDTO>> getAllIncomes() {
         log.debug("Fetching all incomes");
         List<IncomeDTO> incomes = StreamSupport.stream(

@@ -1,0 +1,10 @@
+<div class="card user-header">
+  <div class="avatar">
+    <i class="pi pi-user"></i>
+  </div>
+  <div>
+    <h2>{{ getUserDisplayName() }}</h2>
+    <p>{{ getUserEmail() }}</p>
+  </div>
+  <button (click)="onEdit()" class="edit-btn">Edit Profile</button>
+</div>
