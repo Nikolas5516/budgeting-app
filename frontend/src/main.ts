@@ -13,30 +13,22 @@ import { routes } from './app/app.routes';
 import LaraLightTeal from '@primeuix/themes/aura';
 import {appConfig} from './app/app.config';
 
+import { App } from './app/app';
+import { routes } from './app/app.routes';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { AuthInterceptor } from './app/interceptors/auth.interceptor';
+import { ErrorInterceptor } from './app/interceptors/error.interceptor';
+
 bootstrapApplication(App, {
   providers: [
     provideAnimationsAsync(),
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([
-        (req, next) => {
-          const token = localStorage.getItem('jwt');
-          if (token) {
-            req = req.clone({
-              setHeaders: { Authorization: `Bearer ${token}` }
-            });
-          }
-          return next(req);
-        }
-      ])
+      withInterceptors([AuthInterceptor, ErrorInterceptor])
     ),
-    importProvidersFrom(FormsModule),
-    providePrimeNG({
-      theme: {
-        preset: LaraLightTeal,
-      },
-    }),
-  ],
+    provideAnimations(),
+    importProvidersFrom(FormsModule)
+  ]
 });
 bootstrapApplication(App, {
   providers: [

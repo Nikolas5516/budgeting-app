@@ -1,5 +1,6 @@
 package cloudflight.integra.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -8,6 +9,10 @@ public class UserDTO {
     private String name;
     private String email;
     private String password;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String currentPassword;
+
     private LocalDateTime createdAt;
     private BigDecimal balance;
 
@@ -68,5 +73,13 @@ public class UserDTO {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
     }
 }

@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {AuthService} from '../../services/auth.service';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {Router, RouterModule} from '@angular/router';
@@ -7,7 +6,10 @@ import {InputTextModule} from 'primeng/inputtext';
 import {PasswordModule} from 'primeng/password';
 import {ButtonModule} from 'primeng/button';
 import {MessageModule} from 'primeng/message';
-import {Checkbox} from 'primeng/checkbox';
+import {AuthControllerService} from '../../api';
+import {TokenService} from '../../services/token.service';
+import {FormUtilsService} from '../../services/form-utils.service';
+import {HttpResponseService} from '../../services/http-response.service';
 
 @Component({
   selector: 'app-login',
@@ -25,46 +27,82 @@ import {Checkbox} from 'primeng/checkbox';
   ]
 })
 export class LoginComponent {
-  username = '';
+  email = '';
   password = '';
-  error = '';
+
   isLoading = false;
+  errorMessage = '';
 
   constructor(
-    private auth: AuthService,
-    private router: Router
+    private authController: AuthControllerService,
+    private tokenService: TokenService,
+    private router: Router,
+    private formUtils: FormUtilsService,
+    private httpResponseService: HttpResponseService
   ) {
-    this.auth.logout();
   }
 
-  submit() {
-    if (!this.username || !this.password) {
-      this.error = 'Please enter both email and password.';
+  onSubmit(): void {
+    const validation = this.formUtils.validateLoginForm(this.email, this.password);
+    if (!validation.isValid) {
+      this.errorMessage = Object.values(validation.errors)[0];
       return;
     }
 
     this.isLoading = true;
-    this.error = '';
+    this.errorMessage = '';
 
-    this.auth.login(this.username, this.password).subscribe({
-      next: () => {
-        this.isLoading = false;
-        console.log('Login successful. Token saved in localStorage');
-        this.router.navigate(['/income']);
+    const credentials = {email: this.email.trim(), password: this.password};
+
+    this.authController.login(credentials).subscribe({
+      next: (response) => {
+        this.handleLoginSuccess(response);
       },
-      error: (err) => {
-        this.isLoading = false;
-
-        if (typeof err === 'string') {
-          this.error = err;
-        } else if (err.error && typeof err.error === 'string') {
-          this.error = err.error;
-        } else {
-          this.error = err.message || 'Login failed. Please try again.';
-        }
-
-        console.error('Login error:', err);
+      error: (error) => {
+        this.handleLoginError(error);
       }
     });
   }
+
+  // Validation moved to FormUtilsService
+
+  /**
+   * Handles successful login
+   * @param response - Authentication response
+   */
+  private async handleLoginSuccess(response: any): Promise<void> {
+    this.isLoading = false;
+    this.errorMessage = '';
+
+    try {
+      const parsedResponse = await this.httpResponseService.handleResponse(response);
+      const token = (parsedResponse as any)?.token;
+
+      if (token) {
+        this.tokenService.setToken(token);
+        await this.router.navigate(['/user']);
+      } else {
+        this.errorMessage = 'No authentication token received';
+      }
+    } catch (error) {
+      this.errorMessage = 'Failed to process login response';
+    }
+  }
+
+  /**
+   * Handles login errors
+   * @param error - Authentication error
+   */
+  private async handleLoginError(error: any): Promise<void> {
+    this.isLoading = false;
+
+    try {
+      this.errorMessage = await this.httpResponseService.handleError(error, 'Login failed. Please try again.');
+    } catch {
+      this.errorMessage = 'Login failed. Please try again.';
+    }
+
+    this.password = '';
+  }
+
 }

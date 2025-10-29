@@ -1,0 +1,107 @@
+/* === Sidebar === */
+.sidebar {
+  flex: 0 0 240px;
+  background-color: #E6CCF2;
+  color: #4B0082;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 3px 0 10px rgba(0,0,0,0.1);
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.logo-shape {
+  width: 60px;
+  background: linear-gradient(135deg, #A16EFF, #6A0DAD);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.logo-shape i {
+  font-size: 24px;
+  color: white;
+}
+
+.logo h1 {
+  font-size: 20px;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #4B0082;
+  text-align: center;
+}
+
+/* Toggle */
+.menu-toggle {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  color: #4B0082;
+}
+
+/* Menu */
+.menu {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  gap: 10px;
+  color: #4B0082;
+  font-weight: 500;
+}
+
+.menu li.active,
+.menu li:hover {
+  background-color: #DCC6E0;
+  transform: translateX(5px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    flex: 0 0 auto;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    box-shadow: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .menu.show {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+  }
+}

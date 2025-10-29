@@ -28,6 +28,13 @@
               "src/styles.css"
 
             ]
+              "src/styles/styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src"
+              ]
+            }
           },
           "configurations": {
             "production": {
@@ -81,7 +88,12 @@
                 "glob": "**/*",
                 "input": "public"
               }
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src"
+              ]
+            }
           }
         },
         "lint": {
