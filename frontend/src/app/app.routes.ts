@@ -113,6 +113,6 @@ export const routes: Routes = [
   {
     path: 'sidebar-payments',
     component: SidebarPaymentComponent
-  }
+  },
   { path: '**', redirectTo: '/income' },
 ];
