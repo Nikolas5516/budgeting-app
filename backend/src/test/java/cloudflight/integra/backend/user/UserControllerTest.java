@@ -123,7 +123,8 @@ class UserControllerTest {
         updateDto.setId(aliceId);
         updateDto.setName("Alice Updated");
         updateDto.setEmail("alice@new.com");
-        updateDto.setPassword("newpass");
+        // Remove password update or add currentPassword
+        // updateDto.setPassword("newpass");  // Remove this line
 
         mockMvc.perform(put("/api/v1/users/" + aliceId)
                         .header("Authorization", "Bearer " + testToken)

@@ -1,0 +1,21 @@
+<div class="cd-overlay" *ngIf="isOpen">
+  <div class="cd-dialog">
+    <div class="cd-header">
+      <i [class]="icon"></i>
+      <h2>{{ header }}</h2>
+    </div>
+
+    <div class="cd-body">
+      <p>{{ message }}</p>
+    </div>
+
+    <div class="cd-footer">
+      <button type="button" class="btn ghost" (click)="onReject()">
+        {{ rejectLabel }}
+      </button>
+      <button type="button" class="btn primary" (click)="onAccept()">
+        {{ acceptLabel }}
+      </button>
+    </div>
+  </div>
+</div>

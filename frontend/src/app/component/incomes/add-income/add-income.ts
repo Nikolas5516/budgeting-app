@@ -8,9 +8,9 @@ import {DatePickerModule} from 'primeng/datepicker';
 import { Select } from 'primeng/select';
 import { Button } from 'primeng/button';
 import { Textarea } from 'primeng/textarea';
-import {IncomeControllerService} from '../../../api';
-import {AuthService} from '../../../services/auth.service';
+import {AuthControllerService, IncomeControllerService, UserControllerService} from '../../../api';
 import { ActivatedRoute } from '@angular/router';
+import {TokenService} from '../../../services/token.service';
 
 @Component({
   selector: 'app-add-income',
@@ -37,13 +37,15 @@ export class AddIncomeComponent implements OnInit {
   ];
 
   incomeId?: number;
+  private userId?: number;
 
   constructor(
     private fb: FormBuilder,
     private incomeService: IncomeControllerService,
+    private userService: UserControllerService,
+    private tokenService: TokenService,
     private router: Router,
-    private route: ActivatedRoute,
-    private authService: AuthService,
+    private route: ActivatedRoute
   ) {
     this.incomeForm = this.fb.group({
       amount: [null, [Validators.required, Validators.min(0.01)]],
@@ -56,11 +58,24 @@ export class AddIncomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.incomeId = Number(this.route.snapshot.paramMap.get('id'));
-      if (this.incomeId) {
-        this.loadIncomeForEdit(this.incomeId);
-      }
+    this.loadCurrentUser();
+    this.incomeId = Number(this.route.snapshot.paramMap.get('id'));
+    if (this.incomeId) {
+      this.loadIncomeForEdit(this.incomeId);
     }
+  }
+
+  private loadCurrentUser(): void {
+    const email = this.tokenService.getEmailFromToken();
+    if (email) {
+      this.userService.getUserByEmail(email).subscribe({
+        next: (user) => {
+          this.userId = user.id;
+        },
+        error: (err) => console.error('Error loading user:', err)
+      });
+    }
+  }
 
   loadIncomeForEdit(id: number): void {
     this.incomeService.getIncomeById(id).subscribe({
@@ -86,9 +101,14 @@ export class AddIncomeComponent implements OnInit {
       return;
     }
 
+    if (!this.userId) {
+      alert('User not loaded yet. Please try again.');
+      return;
+    }
+
     const income = {
       ...this.incomeForm.value,
-      userId: this.authService.getUser()?.id
+      userId: this.userId
     };
 
     if (this.incomeId) {
@@ -114,7 +134,6 @@ export class AddIncomeComponent implements OnInit {
         }
       });
     }
-
   }
 }
 
