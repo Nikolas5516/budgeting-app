@@ -5,7 +5,7 @@ import {MenuService} from '../../services/menu.service';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })

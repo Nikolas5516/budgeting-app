@@ -1,0 +1,148 @@
+<div class="app-container">
+  <div class="overview-header">
+    <h1>Income Overview</h1>
+    <p class="header-subtitle">Here's a snapshot of your incomes this month</p>
+  </div>
+  <div class="stats-grid">
+    <p-card class="stat-card">
+      <ng-template pTemplate="content">
+        <div class="stat-content">
+          <div class="stat-icon dollar-icon">$</div>
+          <div>
+            <p class="stat-label">Total income</p>
+            <p class="stat-value">${{ totalIncome }}</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+
+    <p-card class="stat-card">
+      <ng-template pTemplate="content">
+        <div class="stat-content">
+          <div class="stat-icon salary-icon">
+            <i class="pi pi-briefcase"></i>
+          </div>
+          <div>
+            <p class="stat-label">Salary</p>
+            <p class="stat-value">${{ salaryIncome }}</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+
+
+    <p-card class="stat-card">
+      <ng-template pTemplate="content">
+        <div class="stat-content">
+          <div class="stat-icon freelance-icon">
+            <i class="pi pi-briefcase"></i>
+          </div>
+          <div>
+            <p class="stat-label">Freelance</p>
+            <p class="stat-value">${{ freelanceIncome }}</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+
+
+    <p-card class="stat-card">
+      <ng-template pTemplate="content">
+        <div class="stat-content">
+          <div class="stat-icon other-icon">
+            <i class="pi pi-inbox"></i>
+          </div>
+          <div>
+            <p class="stat-label">Other</p>
+            <p class="stat-value">${{ otherIncome }}</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="monthly-overview">
+    <h2 class="section-title">Monthly Overview</h2>
+    <div class="chart-wrapper">
+      <p-chart type="bar" [data]="chartData" [options]="chartOptions"></p-chart>
+    </div>
+
+
+
+  <div class="transactions-section">
+    <h3 class="section-title">Recent Income Transactions</h3>
+
+    <div *ngIf="recentTransactions && recentTransactions.length > 0; else noTransactions">
+      <div class="transactions-list">
+        <div class="transaction-item" *ngFor="let transaction of recentTransactions">
+          <div class="transaction-left">
+            <div class="transaction-icon">
+              <i class="pi pi-dollar"></i>
+            </div>
+            <div class="transaction-details">
+              <p class="transaction-source">
+                {{ transaction.source || 'Unknown Source' }}
+              </p>
+              <p class="transaction-timestamp">
+                {{ transaction.date ? (transaction.date | date: 'dd.MM.yyyy') : 'No Date' }}
+              </p>
+            </div>
+          </div>
+          <div class="transaction-actions">
+            <p-button label="Delete" class="action-btn delete-btn" [style]="{'background-color': '#f472b6', 'border': 'none', 'font-size': '0.75rem'}" (onClick)="deleteTransaction(transaction.id)">
+            </p-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noTransactions>
+      <p class="no-data">No recent transactions found.</p>
+    </ng-template>
+
+      <p-button label="See All" class="see-all-btn" [routerLink]="['/income/list']" [style]="{'background-color': '#a78bfa', 'border': 'none', 'width': '100%'}"></p-button>
+    </div>
+
+      <div class="tips-section">
+      <h3 class="section-title">Income Tips</h3>
+
+      <div class="tips-list">
+        <div class="tip-item">
+          <div class="tip-icon">
+            <i class="pi pi-chart-line"></i>
+          </div>
+          <div class="tip-content">
+            <p class="tip-title">Track Regularly</p>
+            <p class="tip-description">
+              Review your income sources weekly to identify growth opportunities.
+            </p>
+          </div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-icon">
+            <i class="pi pi-wallet"></i>
+          </div>
+          <div class="tip-content">
+            <p class="tip-title">Diversify Income</p>
+            <p class="tip-description">
+              Explore freelance or side gigs to increase your total income.
+            </p>
+          </div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-icon">
+            <i class="pi pi-calendar"></i>
+          </div>
+          <div class="tip-content">
+            <p class="tip-title">Plan Ahead</p>
+            <p class="tip-description">
+              Set reminders for recurring income and financial goals.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
