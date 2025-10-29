@@ -55,5 +55,6 @@ bootstrapApplication(App, {
     }),
   ],
 });
+
 bootstrapApplication(App, appConfig)
   .catch(err => console.error(err));
