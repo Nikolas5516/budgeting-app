@@ -6,6 +6,7 @@ import {IncomeListComponent} from './component/incomes/income-list/income-list';
 import {AddIncomeComponent} from './component/incomes/add-income/add-income';
 import {IncomeComponent} from './component/incomes/income_overview/income';
 import {UserComponent} from './component/user-ui/user.component';
+import { LandingComponent } from './component/landing/landing.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: '/landing-page', pathMatch: 'full'},
