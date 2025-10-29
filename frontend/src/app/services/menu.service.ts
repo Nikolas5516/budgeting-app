@@ -17,7 +17,7 @@ export class MenuService {
         this.router.navigate(['/user']);
         break;
       case 'Incomes':
-        this.router.navigate(['/incomes']);
+        this.router.navigate(['/income']);
         break;
       case 'Expenses':
         this.router.navigate(['/expenses']);
