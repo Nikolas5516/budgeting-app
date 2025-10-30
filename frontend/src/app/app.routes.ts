@@ -16,11 +16,6 @@ import {SidebarPaymentComponent} from './component/payments/sidebar/sidebar.comp
 import {UserComponent} from './component/user-ui/user.component';
 import {LandingComponent} from './component/landing/landing.component';
 
-import {SavingsList} from './component/savings/savings-list/savings-list';
-import {SavingsForm} from './component/savings/savings-form/savings-form';
-import {SavingsOverview} from './component/savings/savings-overview/savings-overview';
-
-;
 export const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},
   {
@@ -57,12 +52,4 @@ export const routes: Routes = [
   { path: 'income/add', component: AddIncomeComponent , canActivate: [AuthGuard]},
   { path: 'income/edit/:id', component: AddIncomeComponent , canActivate: [AuthGuard]},
   {path: 'user', component: UserComponent, canActivate: [AuthGuard]},
-
-  // Savings routes
-  { path: 'savings', component: SavingsOverview },
-  { path: 'savings/list', component: SavingsList },
-  { path: 'savings/add', component: SavingsForm,},
-  { path: 'savings/edit/:id', component: SavingsForm },
-
-  {path: '', redirectTo: '/login', pathMatch: 'full'}
 ];
