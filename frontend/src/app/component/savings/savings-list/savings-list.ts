@@ -25,7 +25,7 @@ import { SidebarComponent } from '../../sidebar/sidebar.component';
     SidebarComponent
   ],
   templateUrl: './savings-list.html',
-  styleUrl: './savings-list.css'
+  styleUrls: ['./savings-list.css']
 })
 export class SavingsList implements OnInit {
 
@@ -38,9 +38,9 @@ export class SavingsList implements OnInit {
   private userId?: number;
 
   constructor(
-      private savingService: SavingService,
-      private userService: UserControllerService,
-      private tokenService: TokenService
+    private savingService: SavingService,
+    private userService: UserControllerService,
+    private tokenService: TokenService
   ) {}
 
   ngOnInit(): void {
@@ -61,12 +61,16 @@ export class SavingsList implements OnInit {
   }
 
   loadSavings(): void {
-    const userId = this.userId;
+    if (!this.userId) return;
     this.loading = true;
+
     this.savingService.getAllSavings().subscribe({
       next: (data) => {
-        this.savings = data.filter(s => s.userId === userId);
-        this.filteredSavings = data.filter(s => s.userId === userId);
+
+        const savingsArray = Array.isArray(data) ? data : [data];
+
+        this.savings = savingsArray.filter(s => s.userId === this.userId);
+        this.filteredSavings = [...this.savings];
         this.loading = false;
       },
       error: (err) => {
@@ -78,15 +82,16 @@ export class SavingsList implements OnInit {
 
   filterSavings(): void {
     const dateFilter = this.filterDate
-        ? new Date(this.filterDate).toISOString().split('T')[0]
-        : '';
-
+      ? new Date(this.filterDate).toISOString().split('T')[0]
+      : '';
     const goalFilter = this.filterGoal?.toLowerCase().trim() ?? '';
 
     this.filteredSavings = this.savings.filter(saving => {
       const savingDate = saving.date?.split('T')[0];
       const matchesDate = dateFilter ? savingDate === dateFilter : true;
-      const matchesGoal = goalFilter ? (saving.goal?.toLowerCase().includes(goalFilter) ?? false) : true;
+      const matchesGoal = goalFilter
+        ? (saving.goal?.toLowerCase().includes(goalFilter) ?? false)
+        : true;
       return matchesDate && matchesGoal;
     });
   }
@@ -98,7 +103,7 @@ export class SavingsList implements OnInit {
           this.savings = this.savings.filter(s => s.id !== id);
           this.filteredSavings = this.filteredSavings.filter(s => s.id !== id);
         },
-        error: (err: any) => console.error('Error deleting saving:', err)
+        error: (err) => console.error(' Error deleting saving:', err)
       });
     }
   }
