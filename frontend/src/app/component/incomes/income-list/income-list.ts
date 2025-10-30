@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {IncomeDTO} from '../../../api';
+import {IncomeDTO, UserControllerService} from '../../../api';
 import {FormBuilder, FormGroup, FormsModule, Validators} from '@angular/forms';
 import {RouterLink} from '@angular/router';
 import {ButtonModule} from 'primeng/button';
@@ -8,7 +8,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import {IncomeControllerService} from '../../../api';
 import {CommonModule} from '@angular/common';
-import {AuthService} from '../../../services/auth.service';
+import {TokenService} from '../../../services/token.service';
 
 @Component({
   selector: 'app-income-list',
@@ -32,15 +32,32 @@ export class IncomeListComponent implements OnInit {
   filterDate: string = '';
   filterSource: string = '';
   loading = false;
+  private userId?: number;
 
- constructor(private incomeService: IncomeControllerService,private authService: AuthService) {}
+ constructor(private incomeService: IncomeControllerService,
+             private userService: UserControllerService,
+             private tokenService: TokenService) {}
 
   ngOnInit(): void {
+    this.loadCurrentUser();
     this.loadIncomes();
   }
 
+  private loadCurrentUser(): void {
+    const email = this.tokenService.getEmailFromToken();
+    if (email) {
+      this.userService.getUserByEmail(email).subscribe({
+        next: (user) => {
+          this.userId = user.id;
+        },
+        error: (err) => console.error('Error loading user:', err)
+      });
+    }
+  }
+
+
   loadIncomes(): void {
-    const userId = this.authService.getUser()?.id;
+    const userId = this.userId;
     this.loading = true;
     this.incomeService.getAllIncomes().subscribe({
       next: (data) => {
