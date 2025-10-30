@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SavingDTO, SavingService } from '../../../api';
+import { SavingDTO, SavingService, UserControllerService } from '../../../api';
+import { TokenService } from '../../../services/token.service';
 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
-import {SidebarComponent} from '../../sidebar/sidebar.component';
+import { SidebarComponent } from '../../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-savings-list',
@@ -34,19 +35,38 @@ export class SavingsList implements OnInit {
   filterDate: string = '';
   filterGoal: string = '';
   loading = false;
+  private userId?: number;
 
-  constructor(private savingService: SavingService) {}
+  constructor(
+      private savingService: SavingService,
+      private userService: UserControllerService,
+      private tokenService: TokenService
+  ) {}
 
   ngOnInit(): void {
-    this.loadSavings();
+    this.loadCurrentUser();
+  }
+
+  private loadCurrentUser(): void {
+    const email = this.tokenService.getEmailFromToken();
+    if (email) {
+      this.userService.getUserByEmail(email).subscribe({
+        next: (user) => {
+          this.userId = user.id;
+          this.loadSavings();
+        },
+        error: (err) => console.error('Error loading user:', err)
+      });
+    }
   }
 
   loadSavings(): void {
+    const userId = this.userId;
     this.loading = true;
     this.savingService.getAllSavings().subscribe({
       next: (data) => {
-        this.savings = data;
-        this.filteredSavings = data;
+        this.savings = data.filter(s => s.userId === userId);
+        this.filteredSavings = data.filter(s => s.userId === userId);
         this.loading = false;
       },
       error: (err) => {
@@ -58,8 +78,8 @@ export class SavingsList implements OnInit {
 
   filterSavings(): void {
     const dateFilter = this.filterDate
-      ? new Date(this.filterDate).toISOString().split('T')[0]
-      : '';
+        ? new Date(this.filterDate).toISOString().split('T')[0]
+        : '';
 
     const goalFilter = this.filterGoal?.toLowerCase().trim() ?? '';
 
