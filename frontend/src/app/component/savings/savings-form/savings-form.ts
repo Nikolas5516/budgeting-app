@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { InputText } from 'primeng/inputtext';
@@ -7,9 +7,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Button } from 'primeng/button';
 import { Textarea } from 'primeng/textarea';
-import { SavingService, UserControllerService } from '../../../api';
-import { TokenService } from '../../../services/token.service';
-import { SidebarComponent } from '../../sidebar/sidebar.component';
+import { SavingService } from '../../../api';
+import { AuthService } from '../../../services/auth.service';
+import {SidebarComponent} from '../../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-savings-form',
@@ -31,15 +31,13 @@ export class SavingsForm implements OnInit {
   savingForm: FormGroup;
   savingId?: number;
   isEditMode = false;
-  private userId?: number;
 
   constructor(
     private fb: FormBuilder,
     private savingService: SavingService,
-    private userService: UserControllerService,
-    private tokenService: TokenService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService,
   ) {
     this.savingForm = this.fb.group({
       amount: [null, [Validators.required, Validators.min(0.01)]],
@@ -50,23 +48,10 @@ export class SavingsForm implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCurrentUser();
     this.savingId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.savingId) {
+      this.isEditMode = true;
       this.loadSavingForEdit(this.savingId);
-    }
-  }
-
-
-  private loadCurrentUser(): void {
-    const email = this.tokenService.getEmailFromToken();
-    if (email) {
-      this.userService.getUserByEmail(email).subscribe({
-        next: (user) => {
-          this.userId = user.id;
-        },
-        error: (err) => console.error('Error loading user:', err)
-      });
     }
   }
 
@@ -90,37 +75,52 @@ export class SavingsForm implements OnInit {
       return;
     }
 
-    if (!this.userId) {
-      alert('User not loaded yet. Please try again.');
-      return;
-    }
+    // Convertește data în format ISO string (YYYY-MM-DD)
+    const formValue = this.savingForm.value;
+    const dateValue = formValue.date;
+    const formattedDate = dateValue instanceof Date
+      ? dateValue.toISOString().split('T')[0]  // ← Conversie la string
+      : dateValue;
 
-    const saving = {
-      id: this.savingId,
-      ...this.savingForm.value,
-      userId: this.userId
-    };
+    if (this.isEditMode && this.savingId) {
+      // UPDATE
+      const savingToUpdate = {
+        id: this.savingId,
+        amount: formValue.amount,
+        goal: formValue.goal,
+        date: formattedDate,  // ← Data formatată
+        description: formValue.description || '',
+        userId: this.authService.getUser()?.id || 1  // ← Fallback la 1
+      };
 
-    if (this.savingId) {
-      this.savingService.updateSaving(this.savingId, saving).subscribe({
+      this.savingService.updateSaving(this.savingId, savingToUpdate).subscribe({
         next: () => {
           alert('Saving updated successfully!');
           this.router.navigate(['/savings']);
         },
         error: (err) => {
           console.error('Error updating:', err);
-          alert('Error updating saving.');
+          alert('Error updating saving: ' + (err.error?.message || err.message));
         }
       });
     } else {
-      this.savingService.addSaving(saving).subscribe({
+      // CREATE
+      const savingToCreate = {
+        amount: formValue.amount,
+        goal: formValue.goal,
+        date: formattedDate,  // ← Data formatată
+        description: formValue.description || '',
+        userId: this.authService.getUser()?.id || 1  // ← Fallback la 1
+      };
+
+      this.savingService.addSaving(savingToCreate).subscribe({
         next: () => {
           alert('Saving added successfully!');
           this.router.navigate(['/savings']);
         },
         error: (err) => {
           console.error('Error creating:', err);
-          alert('Error adding saving.');
+          alert('Error adding saving: ' + (err.error?.message || err.message));
         }
       });
     }

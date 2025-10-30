@@ -1,91 +1,86 @@
 <div class="page-layout">
-    <app-sidebar></app-sidebar>
+  <app-sidebar></app-sidebar>
 
-    <div class="app-container">
-        <div class="form-wrapper">
-            <div class="header">
-                <h1>{{ savingId ? 'Edit Saving' : 'Add Saving' }}</h1>
-                <p class="form-subtitle">
-                    {{ savingId ? 'Update your saving details' : 'Fill in the details of your new saving' }}
-                </p>
-            </div>
+  <div class="app-container">
+    <div class="form-wrapper">
+      <div class="header">
+        <h1>{{ isEditMode ? 'Edit Saving' : 'Add Saving' }}</h1>
+        <p class="form-subtitle">
+          {{ isEditMode ? 'Update your saving details' : 'Fill in the details of your new saving' }}
+        </p>
+      </div>
 
-            <form [formGroup]="savingForm" (ngSubmit)="onSubmit()" class="saving-form">
+      <form [formGroup]="savingForm" (ngSubmit)="onSubmit()" class="saving-form">
 
-                <div class="form-group">
-                    <label for="amount">Amount *</label>
-                    <p-inputnumber
-                            inputId="amount"
-                            formControlName="amount"
-                            mode="decimal"
-                            [minFractionDigits]="2"
-                            [min]="0"
-                            placeholder="Enter amount"
-                            styleClass="w-full">
-                    </p-inputnumber>
-                    <small *ngIf="savingForm.controls['amount'].invalid && savingForm.controls['amount'].touched" class="error">
-                        Amount is required and must be greater than 0
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label for="goal">Goal *</label>
-                    <input
-                            id="goal"
-                            type="text"
-                            pInputText
-                            placeholder="e.g., Emergency Fund, Vacation, New Car"
-                            formControlName="goal"
-                            class="w-full">
-                    <small *ngIf="savingForm.controls['goal'].invalid && savingForm.controls['goal'].touched" class="error">
-                        Goal is required
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label for="date">Date *</label>
-                    <p-datepicker
-                            inputId="date"
-                            formControlName="date"
-                            [showIcon]="true"
-                            placeholder="dd.mm.yyyy"
-                            dateFormat="dd.mm.yy"
-                            styleClass="w-full">
-                    </p-datepicker>
-                    <small *ngIf="savingForm.controls['date'].invalid && savingForm.controls['date'].touched" class="error">
-                        Date is required
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Description (optional)</label>
-                    <textarea
-                            id="description"
-                            pTextarea
-                            rows="4"
-                            formControlName="description"
-                            placeholder="Optional notes about this saving"
-                            class="w-full">
-          </textarea>
-                </div>
-
-                <div class="form-actions">
-                    <p-button
-                            label="Cancel"
-                            icon="pi pi-times"
-                            type="button"
-                            severity="secondary"
-                            (click)="onCancel()">
-                    </p-button>
-
-                    <p-button
-                            [label]="savingId ? 'Update Saving' : 'Save Saving'"
-                            icon="pi pi-check"
-                            type="submit"
-                            [disabled]="savingForm.invalid">
-                    </p-button>
-                </div>
-            </form>
+        <div class="form-group">
+          <label for="amount">Amount *</label>
+          <p-inputNumber
+            id="amount"
+            formControlName="amount"
+            mode="decimal"
+            [min]="0"
+            placeholder="Enter amount">
+          </p-inputNumber>
+          <small *ngIf="savingForm.get('amount')?.invalid && savingForm.get('amount')?.touched" class="error">
+            Amount is required and must be greater than 0
+          </small>
         </div>
+
+        <div class="form-group">
+          <label for="goal">Goal *</label>
+          <input
+            id="goal"
+            type="text"
+            pInputText
+            placeholder="e.g., Emergency Fund, Vacation, New Car"
+            formControlName="goal">
+          <small *ngIf="savingForm.get('goal')?.invalid && savingForm.get('goal')?.touched" class="error">
+            Goal is required
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Date *</label>
+          <p-datePicker
+            id="date"
+            formControlName="date"
+            [showIcon]="true"
+            placeholder="zz.ll.aaaa"
+            dateFormat="dd.mm.yy">
+          </p-datePicker>
+          <small *ngIf="savingForm.get('date')?.invalid && savingForm.get('date')?.touched" class="error">
+            Date is required
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description (optional)</label>
+          <textarea
+            id="description"
+            pTextarea
+            rows="4"
+            formControlName="description"
+            placeholder="Optional notes about this saving">
+          </textarea>
+        </div>
+
+        <div class="form-actions">
+          <p-button
+            label="Cancel"
+            icon="pi pi-times"
+            type="button"
+            [style]="{ backgroundColor: '#6b7280', border: 'none' }"
+            (onClick)="onCancel()">
+          </p-button>
+
+          <p-button
+            [label]="isEditMode ? 'Update Saving' : 'Save Saving'"
+            icon="pi pi-check"
+            type="submit"
+            [style]="{ backgroundColor: '#a78bfa', border: 'none' }">
+          </p-button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>

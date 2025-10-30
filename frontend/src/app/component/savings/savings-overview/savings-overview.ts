@@ -3,10 +3,9 @@ import { RouterLink } from '@angular/router';
 import { ChartModule } from 'primeng/chart';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { SavingService, SavingDTO, UserControllerService } from '../../../api';
-import { TokenService } from '../../../services/token.service';
+import { SavingService, SavingDTO } from '../../../api';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../sidebar/sidebar.component';
+import {SidebarComponent} from '../../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-savings-overview',
@@ -29,67 +28,46 @@ export class SavingsOverview implements OnInit {
   retirement = 0;
   otherSavings = 0;
   recentTransactions: any[] = [];
-  private userId?: number;
 
   chartData: any;
   chartOptions: any;
 
-  constructor(
-      private savingService: SavingService,
-      private userService: UserControllerService,
-      private tokenService: TokenService
-  ) {}
+  constructor(private savingService: SavingService) {}
 
   ngOnInit() {
-    this.loadCurrentUser();
-  }
-
-  private loadCurrentUser(): void {
-    const email = this.tokenService.getEmailFromToken();
-    if (email) {
-      this.userService.getUserByEmail(email).subscribe({
-        next: (user) => {
-          this.userId = user.id;
-          this.loadSavings();
-        },
-        error: (err) => console.error('Error loading user:', err)
-      });
-    }
+    this.loadSavings();
   }
 
   loadSavings(): void {
-    const userId = this.userId;
     this.savingService.getAllSavings().subscribe({
       next: (data: any) => {
-        this.savings = Array.isArray(data)
-            ? data.filter((s: SavingDTO) => s.userId === userId)
-            : [];
+        this.savings = Array.isArray(data) ? data : [];
 
         this.totalSavings = this.savings.reduce(
-            (sum: number, saving: SavingDTO) => sum + (saving.amount ?? 0),
-            0
+          (sum: number, saving: SavingDTO) => sum + (saving.amount ?? 0),
+          0
         );
 
         // Categorii de savings bazate pe goal
         this.emergencyFund = this.savings
-            .filter(s => s.goal?.toLowerCase().includes('emergency'))
-            .reduce((sum, s) => sum + (s.amount ?? 0), 0);
+          .filter(s => s.goal?.toLowerCase().includes('emergency'))
+          .reduce((sum, s) => sum + (s.amount ?? 0), 0);
 
         this.retirement = this.savings
-            .filter(s => s.goal?.toLowerCase().includes('retirement'))
-            .reduce((sum, s) => sum + (s.amount ?? 0), 0);
+          .filter(s => s.goal?.toLowerCase().includes('retirement'))
+          .reduce((sum, s) => sum + (s.amount ?? 0), 0);
 
         this.otherSavings = this.savings
-            .filter(s =>
-                !s.goal?.toLowerCase().includes('emergency') &&
-                !s.goal?.toLowerCase().includes('retirement')
-            )
-            .reduce((sum, s) => sum + (s.amount ?? 0), 0);
+          .filter(s =>
+            !s.goal?.toLowerCase().includes('emergency') &&
+            !s.goal?.toLowerCase().includes('retirement')
+          )
+          .reduce((sum, s) => sum + (s.amount ?? 0), 0);
 
         // Recent 3 transactions
         this.recentTransactions = [...this.savings]
-            .sort((a, b) => new Date(b.date ?? '').getTime() - new Date(a.date ?? '').getTime())
-            .slice(0, 3);
+          .sort((a, b) => new Date(b.date ?? '').getTime() - new Date(a.date ?? '').getTime())
+          .slice(0, 3);
 
         this.setupChart();
       },
@@ -154,6 +132,7 @@ export class SavingsOverview implements OnInit {
     }
   }
 
+  // Determină iconița bazată pe goal
   getIconClass(goal?: string): string {
     if (!goal) return 'pi-wallet';
 
