@@ -40,7 +40,6 @@ export class IncomeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCurrentUser();
-    this.loadIncomes();
   }
 
   private loadCurrentUser(): void {
@@ -49,6 +48,7 @@ export class IncomeListComponent implements OnInit {
       this.userService.getUserByEmail(email).subscribe({
         next: (user) => {
           this.userId = user.id;
+          this.loadIncomes();
         },
         error: (err) => console.error('Error loading user:', err)
       });
