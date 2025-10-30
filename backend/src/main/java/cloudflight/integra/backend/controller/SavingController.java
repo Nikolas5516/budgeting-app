@@ -64,7 +64,7 @@ public class SavingController {
                             mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = SavingDTO.class))))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAllSavings() {
+    public ResponseEntity<List<SavingDTO>> getAllSavings() {
 
         log.info("GET /savings called, returning all savings.");
         List<SavingDTO> savingDTOS = savingService.getAllSavings();
