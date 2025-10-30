@@ -4,16 +4,17 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { InputNumberModule } from 'primeng/inputnumber';
-import { CalendarModule } from 'primeng/calendar';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { DatePickerModule } from 'primeng/datepicker';
+import { Textarea } from 'primeng/textarea';
+import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
 import { SidebarComponent } from '../../sidebar/sidebar.component';
 import { MenuService } from '../services/menu.service';
 
-import { ExpenseDTO, ExpenseControllerService } from '../../../api';
-import { AuthService } from '../../../services/auth.service';
+import { ExpenseDTO, ExpenseControllerService, UserControllerService } from '../../../api';
+import { TokenService } from '../../../services/token.service';
 
 @Component({
   selector: 'app-add-expense',
@@ -22,8 +23,9 @@ import { AuthService } from '../../../services/auth.service';
     CommonModule,
     ReactiveFormsModule,
     InputNumberModule,
-    CalendarModule,
-    InputTextareaModule,
+    DatePickerModule,
+    Textarea,
+    ButtonModule,
     ToastModule,
     SidebarComponent,
   ],
@@ -37,7 +39,8 @@ export class AddExpenseComponent implements OnInit {
   private expenseService = inject(ExpenseControllerService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private authService = inject(AuthService);
+  private tokenService = inject(TokenService);
+  private userService = inject(UserControllerService);
   private messageService = inject(MessageService);
   private menuService = inject(MenuService);
 
@@ -46,13 +49,14 @@ export class AddExpenseComponent implements OnInit {
     category: [null, Validators.required],
     date: [new Date().toISOString().split('T')[0], Validators.required],
     description: [''],
-    frequency: [ExpenseDTO.FrequencyEnum.OneTime as any, Validators.required],
+    frequency: ['ONE_TIME', Validators.required],
     endDate: [null],
     nextDueDate: [null],
-    paymentMethod: [ExpenseDTO.PaymentMethodEnum.Card as any, Validators.required],
+    paymentMethod: ['CARD', Validators.required],
   });
   expenseId?: number;
   isEditMode = false;
+  private currentUserId?: number;
 
   ngOnInit(): void {
     this.expenseId = Number(this.route.snapshot.paramMap.get('id')) || undefined;
@@ -62,9 +66,25 @@ export class AddExpenseComponent implements OnInit {
     }
 
     this.handleFrequencyChanges();
+    this.loadCurrentUser();
 
     // keep references to methods used by template
     void this.onSubmit;
+  }
+
+  private loadCurrentUser(): void {
+    const email = this.tokenService.getEmailFromToken?.();
+    if (email) {
+      this.userService.getUserByEmail(email).subscribe({
+        next: (user) => {
+          this.currentUserId = user.id;
+        },
+        error: (_err) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load current user.' });
+          // fallback: leave currentUserId undefined
+        },
+      });
+    }
   }
 
   private handleFrequencyChanges(): void {
@@ -73,7 +93,7 @@ export class AddExpenseComponent implements OnInit {
     const nextDueDateControl = this.expenseForm.get('nextDueDate');
 
     frequencyControl?.valueChanges.subscribe((frequency) => {
-      const isOneTime = frequency === ExpenseDTO.FrequencyEnum.OneTime;
+      const isOneTime = frequency === 'ONE_TIME';
 
       if (isOneTime) {
         endDateControl?.setValue(null);
@@ -95,14 +115,18 @@ export class AddExpenseComponent implements OnInit {
           category: expense.category,
           date: expense.date ?? new Date().toISOString().split('T')[0],
           description: expense.description,
-          frequency: expense.frequency,
+          frequency: expense.frequency ?? 'ONE_TIME',
           endDate: expense.endDate ?? null,
           nextDueDate: expense.nextDueDate ?? null,
-          paymentMethod: expense.paymentMethod,
+          paymentMethod: expense.paymentMethod ?? 'CARD',
         });
       },
       error: (_err: unknown) => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load expense.' });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load expense.',
+        });
       },
     });
   }
@@ -116,9 +140,13 @@ export class AddExpenseComponent implements OnInit {
 
     const formValue = this.expenseForm.getRawValue();
 
-    const userId = this.authService.getUser?.()?.id;
+    const userId = this.currentUserId;
     if (!userId) {
-      this.messageService.add({ severity: 'error', summary: 'Auth Error', detail: 'User not authenticated or ID missing.' });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Auth Error',
+        detail: 'User not authenticated or ID missing.',
+      });
       return;
     }
 

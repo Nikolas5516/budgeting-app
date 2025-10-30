@@ -26,12 +26,12 @@
 
           <div class="form-group">
             <label for="date">Date <span class="required">*</span></label>
-            <p-calendar id="date" formControlName="date" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+            <p-datePicker id="date" formControlName="date" [showIcon]="true" dateFormat="yy-mm-dd"></p-datePicker>
           </div>
 
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea id="description" pInputTextarea formControlName="description" rows="3"></textarea>
+            <textarea id="description" pTextarea rows="3" formControlName="description"></textarea>
           </div>
 
           <div class="form-group">
@@ -41,12 +41,12 @@
 
           <div class="form-group">
             <label for="endDate">End Date</label>
-            <p-calendar id="endDate" formControlName="endDate" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+            <p-datePicker id="endDate" formControlName="endDate" [showIcon]="true" dateFormat="yy-mm-dd"></p-datePicker>
           </div>
 
           <div class="form-group">
             <label for="nextDueDate">Next Due Date</label>
-            <p-calendar id="nextDueDate" formControlName="nextDueDate" [showIcon]="true" dateFormat="yy-mm-dd"></p-calendar>
+            <p-datePicker id="nextDueDate" formControlName="nextDueDate" [showIcon]="true" dateFormat="yy-mm-dd"></p-datePicker>
           </div>
 
           <div class="form-group">
@@ -55,8 +55,8 @@
           </div>
 
           <div class="form-actions">
-            <button pButton type="submit" [disabled]="expenseForm.invalid" aria-label="Save expense">Save</button>
-            <button pButton type="button" class="p-button-secondary" (click)="cancel()" aria-label="Cancel">Cancel</button>
+            <p-button type="submit" [disabled]="expenseForm.invalid" label="Save" aria-label="Save expense"></p-button>
+            <p-button type="button" class="p-button-secondary" (onClick)="cancel()" label="Cancel" aria-label="Cancel"></p-button>
           </div>
 
         </form>
