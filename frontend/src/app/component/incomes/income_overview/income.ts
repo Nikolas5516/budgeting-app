@@ -6,6 +6,7 @@ import { CardModule } from 'primeng/card';
 import {IncomeControllerService} from '../../../api';
 import {IncomeDTO} from '../../../api/model/incomeDTO';
 import {CommonModule} from '@angular/common';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-income',
@@ -31,35 +32,37 @@ export class IncomeComponent implements OnInit {
   chartData: any;
   chartOptions: any;
 
-  constructor(private incomeService: IncomeControllerService) {}
+  constructor(private incomeService: IncomeControllerService, private authService: AuthService) {}
 
   ngOnInit() {
-    this.loadIncomes();
+    setTimeout(() => this.loadIncomes(), 100);
   }
 
   loadIncomes(): void {
+    const userId = this.authService.getUser()?.id;
     this.incomeService.getAllIncomes().subscribe({
       next: (data:IncomeDTO[]) => {
-        this.incomes = data;
-        this.totalIncome = data.reduce(
+        const filtered = data.filter(i => i.userId === userId);
+        this.incomes = filtered;
+        this.totalIncome = filtered.reduce(
           (sum: number, inc: IncomeDTO) => sum + (inc.amount ?? 0),
           0
         );
 
-        this.salaryIncome = data
+        this.salaryIncome = filtered
           .filter(inc => inc.source?.toLowerCase() === 'salary')
           .reduce((sum, inc) => sum + (inc.amount ?? 0), 0);
 
-        this.freelanceIncome = data
+        this.freelanceIncome = filtered
           .filter(inc => inc.source?.toLowerCase() === 'freelance')
           .reduce((sum, inc) => sum + (inc.amount ?? 0), 0);
 
-        this.otherIncome = data
+        this.otherIncome = filtered
           .filter(inc => inc.source?.toLowerCase() !== 'salary' && inc.source?.toLowerCase() !== 'freelance')
           .reduce((sum, inc) => sum + (inc.amount ?? 0), 0);
 
 
-        this.recentTransactions = [...data]
+        this.recentTransactions = [...filtered]
           .sort((a, b) => new Date(b.date ?? '').getTime() - new Date(a.date ?? '').getTime())
           .slice(0, 3);
 
