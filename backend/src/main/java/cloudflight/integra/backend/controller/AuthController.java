@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -101,7 +102,7 @@ public class AuthController {
                                         schema = @Schema(implementation = AuthenticationResponse.class))),
                 @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content)
             })
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(
             @Parameter(description = "User login credentials") @RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(

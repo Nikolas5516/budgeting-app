@@ -75,7 +75,9 @@ export class LoginComponent {
     this.errorMessage = '';
 
     try {
+      console.log('Raw response from backend:', response);
       const parsedResponse = await this.httpResponseService.handleResponse(response);
+      console.log('Parsed response:', parsedResponse);
       const token = (parsedResponse as any)?.token;
 
       if (token) {

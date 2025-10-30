@@ -3,10 +3,10 @@ import {RouterLink} from '@angular/router';
 import { ChartModule } from 'primeng/chart';
 import {ButtonModule} from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import {IncomeControllerService} from '../../../api';
+import {IncomeControllerService, UserControllerService} from '../../../api';
 import {IncomeDTO} from '../../../api/model/incomeDTO';
 import {CommonModule} from '@angular/common';
-import {AuthService} from '../../../services/auth.service';
+import {TokenService} from '../../../services/token.service';
 
 @Component({
   selector: 'app-income',
@@ -28,18 +28,36 @@ export class IncomeComponent implements OnInit {
   freelanceIncome = 0;
   recentTransactions: any[] = [];
 
+  private userId?: number;
+
 
   chartData: any;
   chartOptions: any;
 
-  constructor(private incomeService: IncomeControllerService, private authService: AuthService) {}
+  constructor(private incomeService: IncomeControllerService,
+              private userService: UserControllerService,
+              private tokenService: TokenService) {}
 
   ngOnInit() {
+    this.loadCurrentUser();
     setTimeout(() => this.loadIncomes(), 100);
   }
 
+  private loadCurrentUser(): void {
+    const email = this.tokenService.getEmailFromToken();
+    if (email) {
+      this.userService.getUserByEmail(email).subscribe({
+        next: (user) => {
+          this.userId = user.id;
+        },
+        error: (err) => console.error('Error loading user:', err)
+      });
+    }
+  }
+
+
   loadIncomes(): void {
-    const userId = this.authService.getUser()?.id;
+    const userId = this.userId;
     this.incomeService.getAllIncomes().subscribe({
       next: (data:IncomeDTO[]) => {
         const filtered = data.filter(i => i.userId === userId);
