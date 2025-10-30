@@ -7,60 +7,132 @@
   <div class="content">
     <div class="page-wrapper">
       <div class="welcome">
-        <h2>{{ isEditMode ? 'Edit Expense' : 'Add Expense' }}</h2>
+        <h2>Add Expense</h2>
       </div>
       <p class="payment-subtitle">Fill in the details of your expense</p>
 
-      <div class="form-wrapper">
-        <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()">
+      <form class="payment-form" #form="ngForm" (ngSubmit)="saveExpense(form)">
+        <!-- Amount -->
+        <div class="form-field">
+          <label for="amount">Amount <span class="required">*</span></label>
+          <input
+            id="amount"
+            name="amount"
+            type="number"
+            step="0.01"
+            [(ngModel)]="expense.amount"
+            (input)="onAmountInput()"
+            [ngClass]="{ 'invalid-field': submitted && isAmountInvalid }"
+            placeholder="Enter amount"
+          />
+          <p-message
+            class="field-msg"
+            [ngClass]="{ show: submitted && isAmountInvalid }"
+            icon="pi pi-exclamation-triangle"
+            variant="simple"
+            severity="error"
+            [text]="amountErrorMessage"
+            size="small"
+          ></p-message>
+        </div>
 
-          <div class="form-group">
-            <label for="amount">Amount <span class="required">*</span></label>
-            <p-inputNumber id="amount" formControlName="amount" mode="decimal" [min]="0" inputId="amount"></p-inputNumber>
+        <!-- Category -->
+        <div class="form-field">
+          <label for="category">Category <span class="required">*</span></label>
+          <input
+            id="category"
+            name="category"
+            type="text"
+            [(ngModel)]="expense.category"
+            (input)="onCategoryInput()"
+            [ngClass]="{ 'invalid-field': submitted && isCategoryInvalid }"
+            placeholder="Enter category"
+          />
+          <p-message
+            class="field-msg"
+            [ngClass]="{ show: submitted && isCategoryInvalid }"
+            icon="pi pi-exclamation-triangle"
+            variant="simple"
+            severity="error"
+            text="Please provide a category."
+            size="small"
+          ></p-message>
+        </div>
+
+        <!-- Date -->
+        <div class="form-field">
+          <label for="date">Date <span class="required">*</span></label>
+          <input
+            id="date"
+            name="date"
+            type="date"
+            [(ngModel)]="expense.date"
+            (input)="onDateInput()"
+            [ngClass]="{ 'invalid-field': submitted && isDateInvalid }"
+          />
+          <p-message
+            class="field-msg"
+            [ngClass]="{ show: submitted && isDateInvalid }"
+            icon="pi pi-exclamation-triangle"
+            variant="simple"
+            severity="error"
+            text="Please select a valid date."
+            size="small"
+          ></p-message>
+        </div>
+
+        <!-- Description -->
+        <div class="form-field">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="3"
+            [(ngModel)]="expense.description"
+            placeholder="Optional description"
+          ></textarea>
+        </div>
+
+        <!-- Frequency -->
+        <div class="form-field">
+          <label for="frequency">Frequency</label>
+          <select id="frequency" name="frequency" [(ngModel)]="expense.frequency">
+            <option *ngFor="let o of frequencyOptions" [value]="o.value">{{ o.label }}</option>
+          </select>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="form-field">
+          <label for="paymentMethod">Payment Method</label>
+          <select id="paymentMethod" name="paymentMethod" [(ngModel)]="expense.paymentMethod">
+            <option *ngFor="let o of paymentMethodOptions" [value]="o.value">{{ o.label }}</option>
+          </select>
+        </div>
+
+        <!-- Add More Checkbox -->
+        <div class="add-more-checkbox">
+          <p-checkbox [(ngModel)]="addMore" name="addMore" binary="true" inputId="addMore"></p-checkbox>
+          <label for="addMore">Create more expenses</label>
+        </div>
+
+        <div class="button">
+          <!-- Submit Button -->
+          <button type="button" pRipple class="submit-btn" (click)="saveExpense(form)">Save Expense</button>
+
+          <!-- Cancel Button -->
+          <button type="button" class="submit-btn" (click)="cancel()">Cancel</button>
+        </div>
+
+        <div class="piggy-bank-section">
+          <div class="piggy-bank-icon">
+            <i class="pi pi-money-bill"></i>
           </div>
-
-          <div class="form-group">
-            <label for="category">Category <span class="required">*</span></label>
-            <input id="category" type="text" formControlName="category" placeholder="Enter category" />
-          </div>
-
-          <div class="form-group">
-            <label for="date">Date <span class="required">*</span></label>
-            <p-datePicker id="date" formControlName="date" [showIcon]="true" dateFormat="yy-mm-dd"></p-datePicker>
-          </div>
-
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" pTextarea rows="3" formControlName="description"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="frequency">Frequency <span class="required">*</span></label>
-            <input id="frequency" type="text" formControlName="frequency" placeholder="Enter frequency" />
-          </div>
-
-          <div class="form-group">
-            <label for="endDate">End Date</label>
-            <p-datePicker id="endDate" formControlName="endDate" [showIcon]="true" dateFormat="yy-mm-dd"></p-datePicker>
-          </div>
-
-          <div class="form-group">
-            <label for="nextDueDate">Next Due Date</label>
-            <p-datePicker id="nextDueDate" formControlName="nextDueDate" [showIcon]="true" dateFormat="yy-mm-dd"></p-datePicker>
-          </div>
-
-          <div class="form-group">
-            <label for="paymentMethod">Payment Method <span class="required">*</span></label>
-            <input id="paymentMethod" type="text" formControlName="paymentMethod" placeholder="Enter payment method" />
-          </div>
-
-          <div class="form-actions">
-            <p-button type="submit" [disabled]="expenseForm.invalid" label="Save" aria-label="Save expense"></p-button>
-            <p-button type="button" class="p-button-secondary" (onClick)="cancel()" label="Cancel" aria-label="Cancel"></p-button>
-          </div>
-
-        </form>
-      </div>
+          <p class="text">Keep track of your expenses to stay on top of your budget.</p>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+
+<!-- Toast -->
+<p-toast position="top-left"></p-toast>

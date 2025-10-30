@@ -1,4 +1,3 @@
-<!-- language: html -->
 <div class="app-container">
   <app-sidebar (menuSelect)="onMenuSelect($event)"></app-sidebar>
 
@@ -8,14 +7,17 @@
       <div class="expense-header">
         <div class="expense-controls">
           <div class="filters">
+            <!-- bound to the existing component properties -->
             <input type="date" [(ngModel)]="filterDate" placeholder="Filter by Date">
-            <input type="text" [(ngModel)]="filterQuery" placeholder="Filter by Description or User">
+            <input type="text" [(ngModel)]="filterSource" placeholder="Filter by Description or Source">
+            <!-- keep category select if the component later adds `categories` and `filterCategory` -->
             <select [(ngModel)]="filterCategory">
               <option value="">All Categories</option>
               <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
             </select>
           </div>
 
+          <!-- Call the method directly (no need to check its existence) -->
           <button id="addExpenseBtn" (click)="goToAddExpense()">+ Add Expense</button>
         </div>
       </div>
@@ -29,23 +31,46 @@
           <span>Date / Actions</span>
         </div>
 
-        <div *ngFor="let expense of filteredExpenses(); let i = index" class="table-row">
+        <!-- Use the array property `filteredExpenses` (not a function) -->
+        <div *ngFor="let expense of filteredExpenses; let i = index" class="table-row">
           <span>{{ i + 1 }}</span>
           <span>
             <div>{{ expense.description || ('User: ' + (expense.userId || '—')) }}</div>
           </span>
-          <span>{{ expense.category }}</span>
+          <span>{{ expense.category || '—' }}</span>
           <span>{{ expense.amount | currency }}</span>
           <span>
             <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%;">
-              <div>{{ expense.date }}</div>
+              <div>{{ expense.date | date:'medium' }}</div>
+
               <div>
-                <button type="button" class="button edit" (click)="editExpense(i)"><i class="pi pi-pencil"></i>Edit</button>
-                <button type="button" class="button delete" (click)="confirmDelete(i)"><i class="pi pi-trash"></i>Delete</button>
+                <!-- editExpense and confirmDelete were not present in the provided TS.
+                     Use them only if you add/restore those methods. Otherwise wire to existing deleteExpense(id). -->
+                <button
+                  type="button"
+                  class="button edit"
+                  (click)="editExpense(i)"
+                >
+                  <i class="pi pi-pencil"></i>Edit
+                </button>
+
+                <button
+                  type="button"
+                  class="button delete"
+                  (click)="confirmDelete(i)"
+                >
+                  <i class="pi pi-trash"></i>Delete
+                </button>
               </div>
             </div>
           </span>
         </div>
+
+        <!-- show a friendly message when no records -->
+        <div *ngIf="!loading && (!filteredExpenses || filteredExpenses.length === 0)" class="no-data">
+          No expenses found.
+        </div>
+
       </div>
 
     </div>

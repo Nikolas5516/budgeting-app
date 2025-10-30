@@ -78,7 +78,7 @@ export class EditExpenseComponent implements OnInit {
             summary: 'Error',
             detail: 'Could not load expense data.',
           });
-          this.router.navigate(['/all-expenses']);
+          this.router.navigate(['/expenses/list']);
         },
       });
   }
@@ -114,7 +114,7 @@ export class EditExpenseComponent implements OnInit {
           detail: 'Expense updated successfully!',
           life: 3000,
         });
-        setTimeout(() => this.router.navigate(['/all-expenses']), 1200);
+        setTimeout(() => this.router.navigate(['/expenses/list']), 1200);
       },
       error: (err) => {
         console.error('Failed to update expense', err);
@@ -128,7 +128,7 @@ export class EditExpenseComponent implements OnInit {
   }
 
   cancelEdit(): void {
-    this.router.navigate(['/all-expenses']);
+    this.router.navigate(['/expenses/list']);
   }
 
   onMenuSelect(label: string): void {
