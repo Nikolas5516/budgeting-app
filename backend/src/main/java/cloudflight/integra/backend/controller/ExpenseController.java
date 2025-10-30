@@ -9,6 +9,7 @@ import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,7 +58,7 @@ public class ExpenseController {
      *
      * @return {@link ResponseEntity} containing the list of all {@link ExpenseDTO}
      */
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ExpenseDTO>> getAllExpenses() {
         log.debug("Fetching all expenses");
         List<ExpenseDTO> expenses = StreamSupport.stream(

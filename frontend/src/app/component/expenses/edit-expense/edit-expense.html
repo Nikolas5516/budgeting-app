@@ -1,0 +1,113 @@
+<div class="app-container">
+  <!-- Sidebar -->
+  <app-sidebar (menuSelect)="onMenuSelect($event)"></app-sidebar>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="page-wrapper">
+      <div class="welcome">
+        <h2>Edit Expense</h2>
+      </div>
+      <p class="payment-subtitle">Update the details of your expense</p>
+
+      <form class="payment-form" #form="ngForm" (ngSubmit)="saveExpense(form)">
+        <div class="form-field">
+          <label for="amount">Amount <span class="required">*</span></label>
+          <input
+            type="number"
+            id="amount"
+            name="amount"
+            [(ngModel)]="expense.amount"
+            (input)="onAmountInput()"
+            [ngClass]="{ 'invalid-field': submitted && isAmountInvalid }"
+            placeholder="Enter amount"
+            min="0.01"
+            step="0.01"
+          />
+          <p-message
+            class="field-msg"
+            [ngClass]="{ show: submitted && isAmountInvalid }"
+            icon="pi pi-exclamation-triangle"
+            variant="simple"
+            severity="error"
+            text="Please provide a valid amount."
+            size="small"
+          ></p-message>
+        </div>
+
+        <div class="form-field">
+          <label for="category">Category <span class="required">*</span></label>
+          <input
+            type="text"
+            id="category"
+            name="category"
+            [(ngModel)]="expense.category"
+            (input)="onCategoryChange()"
+            [ngClass]="{ 'invalid-field': submitted && isCategoryInvalid }"
+            placeholder="Enter category"
+          />
+          <p-message
+            class="field-msg"
+            [ngClass]="{ show: submitted && isCategoryInvalid }"
+            icon="pi pi-exclamation-triangle"
+            variant="simple"
+            severity="error"
+            text="Please provide a category."
+            size="small"
+          ></p-message>
+        </div>
+
+        <div class="form-field">
+          <label for="date">Date <span class="required">*</span></label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            [(ngModel)]="expense.date"
+            (input)="onDateInput()"
+            [ngClass]="{ 'invalid-field': submitted && isDateInvalid }"
+          />
+          <p-message
+            class="field-msg"
+            [ngClass]="{ show: submitted && isDateInvalid }"
+            icon="pi pi-exclamation-triangle"
+            variant="simple"
+            severity="error"
+            text="Please select a valid date."
+            size="small"
+          ></p-message>
+        </div>
+
+        <div class="form-field">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            [(ngModel)]="expense.description"
+            rows="3"
+            placeholder="Optional description"
+          ></textarea>
+        </div>
+
+        <div class="button">
+          <p-toast #toast position="top-left" style="margin-left: 600px; margin-bottom: 140px;"></p-toast>
+
+          <button type="button" pRipple class="submit-btn" (click)="saveExpense(form)">
+            Save Expense
+          </button>
+
+          <button type="button" class="submit-btn" (click)="cancelEdit()">
+            Cancel
+          </button>
+        </div>
+
+        <div class="piggy-bank-section">
+          <div class="piggy-bank-icon">
+            <i class="pi pi-wallet"></i>
+          </div>
+          <p class="text">Verify details before saving to keep your records accurate. 💼</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
