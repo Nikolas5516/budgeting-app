@@ -8,6 +8,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import {IncomeControllerService} from '../../../api';
 import {CommonModule} from '@angular/common';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-income-list',
@@ -32,18 +33,19 @@ export class IncomeListComponent implements OnInit {
   filterSource: string = '';
   loading = false;
 
- constructor(private incomeService: IncomeControllerService) {}
+ constructor(private incomeService: IncomeControllerService,private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadIncomes();
   }
 
   loadIncomes(): void {
+    const userId = this.authService.getUser()?.id;
     this.loading = true;
     this.incomeService.getAllIncomes().subscribe({
       next: (data) => {
-        this.incomes = data;
-        this.filteredIncomes = data;
+        this.incomes = data.filter(i => i.userId === userId);
+        this.filteredIncomes = data.filter(i => i.userId === userId);
         this.loading = false;
       },
       error: (err) => {
