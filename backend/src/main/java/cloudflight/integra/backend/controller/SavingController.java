@@ -5,6 +5,7 @@ import cloudflight.integra.backend.dto.SavingDTO;
 import cloudflight.integra.backend.service.SavingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +16,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +46,7 @@ public class SavingController {
                                         schema = @Schema(implementation = SavingDTO.class))),
                 @ApiResponse(responseCode = "404", description = "Saving not found")
             })
-    @GetMapping(value = "/{savingId}")
+    @GetMapping(value = "/{savingId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSavingById(
             @Parameter(description = "ID of saving to return") @PathVariable Long savingId) {
         log.info("GET /savings/{} called, searching for saving with ID: {}", savingId, savingId);
@@ -57,8 +59,11 @@ public class SavingController {
     @ApiResponse(
             responseCode = "200",
             description = "All savings returned",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = SavingDTO.class)))
-    @GetMapping()
+            content =
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = SavingDTO.class))))
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllSavings() {
 
         log.info("GET /savings called, returning all savings.");

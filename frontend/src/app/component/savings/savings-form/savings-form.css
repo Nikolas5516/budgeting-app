@@ -1,0 +1,201 @@
+/* Page Layout with Sidebar */
+.page-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #faf5ff;
+}
+
+/* Main Container */
+.app-container {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form Wrapper */
+.form-wrapper {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.header {
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  color: #6d28d9;
+  font-size: 1.75rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.form-subtitle {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Form Groups */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+label {
+  color: #7c3aed;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* Error Messages */
+.error {
+  color: #dc2626;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* Input Text Styling */
+:host ::ng-deep input[pinputtext],
+:host ::ng-deep .p-inputtext {
+  background-color: white !important;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep input[pinputtext]:focus,
+:host ::ng-deep .p-inputtext:focus {
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 1px #a78bfa;
+  outline: none;
+}
+
+/* Input Number Styling */
+:host ::ng-deep .p-inputnumber {
+  width: 100%;
+}
+
+:host ::ng-deep .p-inputnumber-input {
+  background-color: white !important;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep .p-inputnumber-input:focus {
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 1px #a78bfa;
+  outline: none;
+}
+
+/* Date Picker Styling */
+:host ::ng-deep .p-datepicker,
+:host ::ng-deep .p-date-picker {
+  width: 100%;
+}
+
+:host ::ng-deep .p-datepicker input,
+:host ::ng-deep .p-date-picker input {
+  background-color: white !important;
+  color: #1f2937 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep .p-datepicker input:focus,
+:host ::ng-deep .p-date-picker input:focus {
+  border-color: #a78bfa !important;
+  box-shadow: 0 0 0 1px #a78bfa !important;
+  outline: none;
+}
+
+:host ::ng-deep .p-datepicker input::placeholder,
+:host ::ng-deep .p-date-picker input::placeholder {
+  color: #9ca3af;
+}
+
+/* Textarea Styling */
+:host ::ng-deep .p-textarea,
+:host ::ng-deep textarea.p-inputtextarea {
+  background-color: #fff !important;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  font-size: 0.875rem;
+  resize: vertical;
+  font-family: inherit;
+}
+
+:host ::ng-deep .p-textarea:focus,
+:host ::ng-deep textarea.p-inputtextarea:focus {
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 1px #a78bfa;
+  outline: none;
+}
+
+/* Placeholder Styling */
+::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}
+
+/* Form Actions */
+.form-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+:host ::ng-deep .form-actions .p-button {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 1rem;
+  }
+
+  .form-wrapper {
+    padding: 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  :host ::ng-deep .form-actions .p-button {
+    width: 100%;
+  }
+}
