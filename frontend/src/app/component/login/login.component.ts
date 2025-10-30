@@ -1,15 +1,15 @@
-import {Component} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {CommonModule} from '@angular/common';
-import {Router, RouterModule} from '@angular/router';
-import {InputTextModule} from 'primeng/inputtext';
-import {PasswordModule} from 'primeng/password';
-import {ButtonModule} from 'primeng/button';
-import {MessageModule} from 'primeng/message';
-import {AuthControllerService} from '../../api';
-import {TokenService} from '../../services/token.service';
-import {FormUtilsService} from '../../services/form-utils.service';
-import {HttpResponseService} from '../../services/http-response.service';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
+import { AuthControllerService } from '../../api';
+import { TokenService } from '../../services/token.service';
+import { FormUtilsService } from '../../services/form-utils.service';
+import { HttpResponseService } from '../../services/http-response.service';
 
 @Component({
   selector: 'app-login',
@@ -23,8 +23,8 @@ import {HttpResponseService} from '../../services/http-response.service';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    MessageModule
-  ]
+    MessageModule,
+  ],
 })
 export class LoginComponent {
   email = '';
@@ -38,7 +38,7 @@ export class LoginComponent {
     private tokenService: TokenService,
     private router: Router,
     private formUtils: FormUtilsService,
-    private httpResponseService: HttpResponseService
+    private httpResponseService: HttpResponseService,
   ) {
   }
 
@@ -52,7 +52,7 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const credentials = {email: this.email.trim(), password: this.password};
+    const credentials = { email: this.email.trim(), password: this.password };
 
     this.authController.login(credentials).subscribe({
       next: (response) => {
@@ -60,7 +60,7 @@ export class LoginComponent {
       },
       error: (error) => {
         this.handleLoginError(error);
-      }
+      },
     });
   }
 
@@ -75,9 +75,13 @@ export class LoginComponent {
     this.errorMessage = '';
 
     try {
-      console.log('Raw response from backend:', response);
-      const parsedResponse = await this.httpResponseService.handleResponse(response);
-      console.log('Parsed response:', parsedResponse);
+      let parsedResponse;
+      if (response instanceof Blob) {
+        const text = await response.text();
+        parsedResponse = JSON.parse(text);
+      } else {
+        parsedResponse = response;
+      }
       const token = (parsedResponse as any)?.token;
 
       if (token) {

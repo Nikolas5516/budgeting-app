@@ -11,6 +11,8 @@ import { ExpenseControllerService, ExpenseDTO } from '../../../api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { TokenService } from '../../../services/token.service';
+import { UserControllerService } from '../../../api';
 
 @Component({
   selector: 'app-overview-expense',
@@ -27,6 +29,10 @@ export class OverviewExpenseComponent implements OnInit {
   private expenseService = inject(ExpenseControllerService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
+  private tokenService = inject(TokenService);
+  private userService = inject(UserControllerService);
+
+  private userId?: number;
 
   loading = false;
   expenses: ExpenseDTO[] = [];
@@ -51,7 +57,9 @@ export class OverviewExpenseComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadExpenses();
+    // Resolve current user, then load expenses shortly after (matches income_overview behavior)
+    this.loadCurrentUser();
+    setTimeout(() => this.loadExpenses(), 100);
   }
 
   // helper to read status from ExpenseDTO in a resilient way
@@ -62,35 +70,51 @@ export class OverviewExpenseComponent implements OnInit {
 
   loadExpenses(): void {
     this.loading = true;
-    this.expenseService.getAllExpenses('body', false, { httpHeaderAccept: '*/*' }).subscribe({
+    // request JSON; cast options to any to set Accept: application/json
+    this.expenseService.getAllExpenses().subscribe({
       next: (data: any) => {
-        const handle = (items: ExpenseDTO[]) => {
-          const sorted = items.sort(
-            (a, b) => new Date((b as any).date || 0).getTime() - new Date((a as any).date || 0).getTime(),
-          );
-          this.expenses = sorted;
-          this.recentExpenses = sorted.slice(0, 3);
-          this.calculateTotals(items);
-          this.updateChartMonthly(items);
-          this.loading = false;
-        };
-
         if (Array.isArray(data)) {
-          handle(data);
-        } else {
-          console.warn('Unexpected API response format. Expected array:', data);
-          this.expenses = [];
-          this.recentExpenses = [];
-          this.expenseChartData = { labels: [], datasets: [{ label: 'Expenses', data: [], backgroundColor: '#A16EFF' }] };
-          this.loading = false;
+          this.applyOverviewFiltering(data as ExpenseDTO[]);
+          return;
         }
+
+        // Some generated clients may return a Blob depending on headers; try to handle that
+        if (data && typeof (data as any).text === 'function') {
+          (data as Blob).text().then((text) => {
+            try {
+              const parsed = JSON.parse(text) as ExpenseDTO[];
+              this.applyOverviewFiltering(parsed);
+            } catch (e) {
+              console.error('overview.loadExpenses: failed to parse blob text', e);
+              this.loading = false;
+            }
+          }).catch((e) => {
+            console.error('overview.loadExpenses: failed to read blob', e);
+            this.loading = false;
+          });
+          return;
+        }
+
+        console.warn('overview.loadExpenses: unexpected response format — expected array', data);
+        this.loading = false;
       },
       error: (err) => {
         console.error('Failed to load expenses', err);
         this.loading = false;
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load expenses. Please try again.' });
-      },
+      }
     });
+  }
+
+  private applyOverviewFiltering(items: ExpenseDTO[]): void {
+    // ensure we only show the current user's expenses (tolerant to string/number types)
+    const filtered = this.userId != null ? items.filter(i => String(i.userId) === String(this.userId)) : [];
+    const sorted = filtered.sort((a, b) => new Date((b as any).date || 0).getTime() - new Date((a as any).date || 0).getTime());
+    this.expenses = sorted;
+    this.recentExpenses = sorted.slice(0, 3);
+    this.calculateTotals(filtered);
+    this.updateChartMonthly(filtered);
+    this.loading = false;
   }
 
   calculateTotals(items: ExpenseDTO[]): void {
@@ -137,7 +161,8 @@ export class OverviewExpenseComponent implements OnInit {
   }
 
   goToAllExpenses(): void {
-    this.router.navigate(['/expenses']);
+    // navigate to the expenses list route (matches app.routes.ts)
+    this.router.navigate(['/expenses/list']);
   }
 
   onMenuSelect(label: string): void {
@@ -173,5 +198,18 @@ export class OverviewExpenseComponent implements OnInit {
         });
       },
     });
+  }
+
+  // Resolve the current user (by email from token) and set userId
+  private loadCurrentUser(): void {
+    const email = this.tokenService.getEmailFromToken();
+    if (email) {
+      this.userService.getUserByEmail(email).subscribe({
+        next: (user) => {
+          this.userId = user?.id;
+        },
+        error: (err) => console.error('Error loading user:', err),
+      });
+    }
   }
 }

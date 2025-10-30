@@ -69,6 +69,7 @@ export const routes: Routes = [
   { path: 'income/edit/:id', component: AddIncomeComponent, canActivate: [AuthGuard] },
   // Expenses routes
   { path: 'expenses', component: OverviewExpenseComponent, canActivate: [AuthGuard] },
+  { path: 'all-expenses', redirectTo: '/expenses/list', pathMatch: 'full' },
   { path: 'expenses/list', component: AllExpensesComponent, canActivate: [AuthGuard] },
   { path: 'expenses/add', component: AddExpenseComponent, canActivate: [AuthGuard] },
   { path: 'expenses/edit/:id', component: EditExpenseComponent, canActivate: [AuthGuard] },
