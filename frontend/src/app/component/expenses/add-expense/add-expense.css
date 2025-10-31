@@ -1,4 +1,3 @@
-/* frontend/src/app/component/expenses/add-expense/add-expense.css */
 :host, body, .app-container {
   margin: 0;
   padding: 0;
@@ -9,7 +8,6 @@
   overflow: hidden;
 }
 
-/* Root layout */
 .app-container {
   width: 100%;
   height: 100vh;
@@ -18,9 +16,6 @@
   overflow: hidden;
 }
 
-/* Content card
-   - align to top-left (no vertical centering)
-   - allow content to start right next to the sidebar */
 .content {
   flex: 1;
   background: #fff;
@@ -30,17 +25,15 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* changed from center */
-  align-items: flex-start;     /* changed from center */
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
-/* Page wrapper
-   - reduced left/right padding so content sits closer to sidebar
-   - reduced top padding so content starts near top */
+
 .page-wrapper {
   width: 100%;
   max-width: 800px;
-  padding: 12px 24px 25px 24px; /* top, right, bottom, left */
+  padding: 12px 24px 25px 24px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -73,13 +66,12 @@
   margin: 10px 0;
 }
 
-/* Form container (supports both .payment-form and .expense-form) */
-/* Increased gap to create more space between fields */
+
 .payment-form,
 .expense-form {
   display: flex;
   flex-direction: column;
-  gap: 18px; /* increased spacing between fields */
+  gap: 18px;
   width: 100%;
 }
 .payment-form label,
@@ -89,7 +81,7 @@
   font-weight: 500;
 }
 
-/* Inputs & selects */
+
 .payment-form input,
 .payment-form select,
 .expense-form input,
@@ -110,13 +102,13 @@
   border-color: #6A0DAD;
 }
 
-/* Specific helpers */
+
 .invalid-field { border-color: red; }
 .required { color: red; }
 
 .add-more-checkbox { display:flex; align-items:center; gap:6px; margin-bottom:15px; }
 
-/* Buttons */
+
 .submit-btn,
 .save-btn {
   padding: 12px 20px;
@@ -134,24 +126,7 @@
   background: linear-gradient(to right,#6A0DAD,#A16EFF);
 }
 
-/* Decorative/promo section */
-.piggy-bank-section {
-  background: #E6CCF2;
-  padding: 35px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  margin-top: 20px;
-  text-align: center;
-}
-.piggy-bank-section i {
-  display: inline-block;
-  padding: 20px;
-  border-radius: 50%;
-  background: linear-gradient(135deg,#A16EFF,#6A0DAD);
-  color: white;
-  font-size: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
+
 .text {
   margin-top: 15px;
   font-size: 16px;
@@ -159,11 +134,11 @@
   font-weight: 500;
 }
 
-/* Form field / validation messaging */
+
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* increased spacing inside each field group */
+  gap: 8px;
   min-height: 60px;
 }
 .field-msg {
@@ -177,7 +152,6 @@
   visibility: visible;
 }
 
-/* Date input icon color tweak */
 .payment-form input[type="date"]::-webkit-calendar-picker-indicator,
 .expense-form input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(17%) sepia(92%) saturate(7200%) hue-rotate(248deg) brightness(91%) contrast(86%);
@@ -186,7 +160,6 @@
 .payment-form input::placeholder,
 .expense-form input::placeholder { color: #4B0082; }
 
-/* PrimeNG overrides */
 :host ::ng-deep .p-checkbox.p-checkbox-checked .p-checkbox-box {
   background-color: #A16EFF !important;
   border-color: #A16EFF !important;
@@ -200,9 +173,14 @@
   font-weight: 500;
 }
 
-/* Layout helper for grouped action buttons */
 .button {
   display: flex;
   gap: 35px;
   margin-top: 10px;
 }
+.form-field input[type="date"] {
+  color: #4B0082;
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+}
+

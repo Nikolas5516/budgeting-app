@@ -29,16 +29,31 @@ export class EditExpenseComponent implements OnInit {
   expense: ExpenseDTO = {} as ExpenseDTO;
   submitted = false;
 
+  // validation flags
   isAmountInvalid = false;
   isCategoryInvalid = false;
   isDateInvalid = false;
+  isEndDateInvalid = false;
+  isNextDueDateInvalid = false;
+
+  // dropdown options
+  frequencyOptions = [
+    { label: 'One Time', value: 'ONE_TIME' },
+    { label: 'Monthly', value: 'MONTHLY' },
+    { label: 'Yearly', value: 'YEARLY' },
+  ];
+
+  paymentMethodOptions = [
+    { label: 'Card', value: 'CARD' },
+    { label: 'Transfer', value: 'TRANSFER' },
+  ];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private messageService: MessageService,
     private menuService: MenuService,
-    private expenseService: ExpenseControllerService,
+    private expenseService: ExpenseControllerService
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +69,7 @@ export class EditExpenseComponent implements OnInit {
     }
   }
 
+  /** Load expense details by ID */
   loadExpenseById(id: number): void {
     this.expenseService
       .getExpenseById(id, 'body', false, { httpHeaderAccept: '*/*' })
@@ -64,7 +80,7 @@ export class EditExpenseComponent implements OnInit {
               try {
                 this.expense = JSON.parse(text);
               } catch (e) {
-                console.error('Error parsing expense', e);
+                console.error('Error parsing expense:', e);
               }
             });
           } else {
@@ -83,8 +99,12 @@ export class EditExpenseComponent implements OnInit {
       });
   }
 
+  /** Input field validation handlers */
   onAmountInput(): void {
-    this.isAmountInvalid = !(this.expense.amount !== undefined && this.expense.amount !== null && this.expense.amount > 0);
+    this.isAmountInvalid =
+      !(this.expense.amount !== undefined &&
+        this.expense.amount !== null &&
+        this.expense.amount > 0);
   }
 
   onCategoryChange(): void {
@@ -93,16 +113,55 @@ export class EditExpenseComponent implements OnInit {
 
   onDateInput(): void {
     this.isDateInvalid = !this.expense.date;
+    this.validateDateRelations();
   }
 
-  saveExpense(form: NgForm): void {
+  onEndDateInput(): void {
+    this.validateDateRelations();
+  }
+
+  onNextDueDateInput(): void {
+    this.validateDateRelations();
+  }
+
+  /** Validate logical date order */
+  private validateDateRelations(): void {
+    this.isEndDateInvalid = false;
+    this.isNextDueDateInvalid = false;
+
+    const date = this.expense.date ? new Date(this.expense.date) : null;
+    const endDate = this.expense.endDate ? new Date(this.expense.endDate) : null;
+    const nextDue = this.expense.nextDueDate ? new Date(this.expense.nextDueDate) : null;
+
+    if (date && endDate && endDate < date) {
+      this.isEndDateInvalid = true;
+    }
+    if (date && nextDue && nextDue < date) {
+      this.isNextDueDateInvalid = true;
+    }
+  }
+
+  /** Save (update) expense */
+  updateExpense(form: NgForm): void {
     this.submitted = true;
 
-    this.isAmountInvalid = !(this.expense.amount !== undefined && this.expense.amount !== null && this.expense.amount > 0);
-    this.isCategoryInvalid = !this.expense.category;
-    this.isDateInvalid = !this.expense.date;
+    this.onAmountInput();
+    this.onCategoryChange();
+    this.onDateInput();
+    this.validateDateRelations();
 
-    if (this.isAmountInvalid || this.isCategoryInvalid || this.isDateInvalid) {
+    if (
+      this.isAmountInvalid ||
+      this.isCategoryInvalid ||
+      this.isDateInvalid ||
+      this.isEndDateInvalid ||
+      this.isNextDueDateInvalid
+    ) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation error',
+        detail: 'Please correct the highlighted fields.',
+      });
       return;
     }
 
@@ -110,18 +169,18 @@ export class EditExpenseComponent implements OnInit {
       next: () => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Success',
+          summary: 'Updated',
           detail: 'Expense updated successfully!',
-          life: 3000,
+          life: 2500,
         });
         setTimeout(() => this.router.navigate(['/expenses/list']), 1200);
       },
       error: (err) => {
-        console.error('Failed to update expense', err);
+        console.error('Failed to update expense:', err);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to update expense.',
+          detail: 'Failed to update expense. Please try again.',
         });
       },
     });
