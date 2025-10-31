@@ -100,6 +100,29 @@
             <option *ngFor="let o of frequencyOptions" [value]="o.value">{{ o.label }}</option>
           </select>
         </div>
+        <!-- End Date -->
+        <div class="form-field">
+          <label for="endDate">End Date (optional)</label>
+          <input
+            id="endDate"
+            name="endDate"
+            type="date"
+            [(ngModel)]="expense.endDate"
+            placeholder="zz.ll.aaaa"
+          />
+        </div>
+
+        <!-- Next Due Date -->
+        <div class="form-field">
+          <label for="nextDueDate">Next Due Date</label>
+          <input
+            id="nextDueDate"
+            name="nextDueDate"
+            type="date"
+            [(ngModel)]="expense.nextDueDate"
+            placeholder="zz.ll.aaaa"
+          />
+        </div>
 
         <!-- Payment Method -->
         <div class="form-field">
@@ -123,12 +146,6 @@
           <button type="button" class="submit-btn" (click)="cancel()">Cancel</button>
         </div>
 
-        <div class="piggy-bank-section">
-          <div class="piggy-bank-icon">
-            <i class="pi pi-money-bill"></i>
-          </div>
-          <p class="text">Keep track of your expenses to stay on top of your budget.</p>
-        </div>
       </form>
     </div>
   </div>

@@ -9,6 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { SidebarPaymentComponent } from '../sidebar/sidebar.component';
 import { MenuService } from '../services/menu.service';
 import { PaymentControllerService, PaymentDTO } from '../../../api';
+import {ConfirmDialog} from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-edit-payment',
@@ -20,6 +21,7 @@ import { PaymentControllerService, PaymentDTO } from '../../../api';
     ButtonModule,
     MessageModule,
     SidebarPaymentComponent,
+    ConfirmDialog,
   ],
   providers: [MessageService],
   templateUrl: './edit-payments.component.html',

@@ -5,12 +5,15 @@
   <!-- Content -->
   <div class="content">
     <div class="page-wrapper">
-      <div class="welcome">
-        <h2>Edit Expense</h2>
+      <!-- Header -->
+      <div class="page-header">
+        <h2 class="page-title">Edit Expense</h2>
+        <p class="page-subtitle">Update the details of your expense</p>
       </div>
-      <p class="payment-subtitle">Update the details of your expense</p>
 
-      <form class="payment-form" #form="ngForm" (ngSubmit)="saveExpense(form)">
+      <!-- Form -->
+      <form class="expense-form" #form="ngForm" (ngSubmit)="updateExpense(form)">
+        <!-- Amount -->
         <div class="form-field">
           <label for="amount">Amount <span class="required">*</span></label>
           <input
@@ -18,23 +21,14 @@
             id="amount"
             name="amount"
             [(ngModel)]="expense.amount"
-            (input)="onAmountInput()"
-            [ngClass]="{ 'invalid-field': submitted && isAmountInvalid }"
             placeholder="Enter amount"
             min="0.01"
             step="0.01"
+            required
           />
-          <p-message
-            class="field-msg"
-            [ngClass]="{ show: submitted && isAmountInvalid }"
-            icon="pi pi-exclamation-triangle"
-            variant="simple"
-            severity="error"
-            text="Please provide a valid amount."
-            size="small"
-          ></p-message>
         </div>
 
+        <!-- Category -->
         <div class="form-field">
           <label for="category">Category <span class="required">*</span></label>
           <input
@@ -42,21 +36,12 @@
             id="category"
             name="category"
             [(ngModel)]="expense.category"
-            (input)="onCategoryChange()"
-            [ngClass]="{ 'invalid-field': submitted && isCategoryInvalid }"
             placeholder="Enter category"
+            required
           />
-          <p-message
-            class="field-msg"
-            [ngClass]="{ show: submitted && isCategoryInvalid }"
-            icon="pi pi-exclamation-triangle"
-            variant="simple"
-            severity="error"
-            text="Please provide a category."
-            size="small"
-          ></p-message>
         </div>
 
+        <!-- Date -->
         <div class="form-field">
           <label for="date">Date <span class="required">*</span></label>
           <input
@@ -64,50 +49,72 @@
             id="date"
             name="date"
             [(ngModel)]="expense.date"
-            (input)="onDateInput()"
-            [ngClass]="{ 'invalid-field': submitted && isDateInvalid }"
+            required
+            placeholder="zz.ll.aaaa"
           />
-          <p-message
-            class="field-msg"
-            [ngClass]="{ show: submitted && isDateInvalid }"
-            icon="pi pi-exclamation-triangle"
-            variant="simple"
-            severity="error"
-            text="Please select a valid date."
-            size="small"
-          ></p-message>
         </div>
 
+        <!-- Description -->
         <div class="form-field">
-          <label for="description">Description</label>
+          <label for="description">Description (optional)</label>
           <textarea
             id="description"
             name="description"
             [(ngModel)]="expense.description"
-            rows="3"
-            placeholder="Optional description"
+            rows="2"
+            placeholder="Optional notes"
           ></textarea>
         </div>
 
-        <div class="button">
-          <p-toast #toast position="top-left" style="margin-left: 600px; margin-bottom: 140px;"></p-toast>
-
-          <button type="button" pRipple class="submit-btn" (click)="saveExpense(form)">
-            Save Expense
-          </button>
-
-          <button type="button" class="submit-btn" (click)="cancelEdit()">
-            Cancel
-          </button>
+        <!-- Frequency -->
+        <div class="form-field">
+          <label for="frequency">Frequency</label>
+          <select id="frequency" name="frequency" [(ngModel)]="expense.frequency">
+            <option *ngFor="let o of frequencyOptions" [value]="o.value">{{ o.label }}</option>
+          </select>
         </div>
 
-        <div class="piggy-bank-section">
-          <div class="piggy-bank-icon">
-            <i class="pi pi-wallet"></i>
-          </div>
-          <p class="text">Verify details before saving to keep your records accurate. 💼</p>
+        <!-- End Date -->
+        <div class="form-field">
+          <label for="endDate">End Date (optional)</label>
+          <input
+            id="endDate"
+            name="endDate"
+            type="date"
+            [(ngModel)]="expense.endDate"
+            placeholder="zz.ll.aaaa"
+          />
         </div>
+
+        <!-- Next Due Date -->
+        <div class="form-field">
+          <label for="nextDueDate">Next Due Date</label>
+          <input
+            id="nextDueDate"
+            name="nextDueDate"
+            type="date"
+            [(ngModel)]="expense.nextDueDate"
+            placeholder="zz.ll.aaaa"
+          />
+        </div>
+
+        <!-- Payment Method -->
+        <div class="form-field">
+          <label for="paymentMethod">Payment Method</label>
+          <select id="paymentMethod" name="paymentMethod" [(ngModel)]="expense.paymentMethod">
+            <option *ngFor="let o of paymentMethodOptions" [value]="o.value">{{ o.label }}</option>
+          </select>
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-buttons">
+          <button type="submit" class="save-btn">Update Expense</button>
+          <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+        </div>
+
       </form>
     </div>
   </div>
 </div>
+
+<p-toast position="top-left"></p-toast>

@@ -70,7 +70,6 @@ export class OverviewExpenseComponent implements OnInit {
 
   loadExpenses(): void {
     this.loading = true;
-    // request JSON; cast options to any to set Accept: application/json
     this.expenseService.getAllExpenses().subscribe({
       next: (data: any) => {
         if (Array.isArray(data)) {
