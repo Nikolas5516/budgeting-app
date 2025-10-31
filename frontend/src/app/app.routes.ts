@@ -58,7 +58,7 @@ export const routes: Routes = [
   { path: 'savings/add', component: SavingsForm,},
   { path: 'savings/edit/:id', component: SavingsForm },
 
-  {path: '', redirectTo: '/login', pathMatch: 'full'}
+  {path: '', redirectTo: '/login', pathMatch: 'full'},
   { path: '', redirectTo: '/landing-page', pathMatch: 'full' },
   { path: 'landing-page', component: LandingComponent },
   { path: 'login', component: LoginComponent },
