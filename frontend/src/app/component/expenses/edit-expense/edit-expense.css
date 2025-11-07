@@ -1,0 +1,190 @@
+:host, body, .app-container {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  height: 100vh;
+  display: flex;
+  background: #F0E6FA;
+  overflow: hidden;
+}
+
+.app-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  background: #F0E6FA;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  background: #fff;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.05);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.page-wrapper {
+  width: 100%;
+  max-width: 800px;
+  padding: 16px 28px 40px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.page-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #4B0082;
+  position: relative;
+}
+.page-title::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(to right, #A16EFF, #C080FF);
+  border-radius: 2px;
+  margin-top: 6px;
+}
+.page-subtitle {
+  font-size: 14px;
+  color: #6A0DAD;
+  opacity: 0.85;
+}
+
+
+.expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+.expense-form label {
+  font-size: 13px;
+  color: #4B0082;
+  font-weight: 500;
+}
+
+.expense-form input,
+.expense-form select,
+.expense-form textarea {
+  padding: 10px;
+  border: 1px solid #DCC6E0;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  background: #F9F6FC;
+  color: #4B0082;
+  transition: border 0.3s, box-shadow 0.2s;
+}
+
+.expense-form input:focus,
+.expense-form select:focus,
+.expense-form textarea:focus {
+  border-color: #6A0DAD;
+  box-shadow: 0 0 0 3px rgba(161, 110, 255, 0.15);
+}
+
+/* Validation + fields */
+.required { color: red; }
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.invalid-field {
+  border-color: red;
+  background: #FFF4F4;
+}
+
+/* Buttons */
+.form-buttons {
+  display: flex;
+  gap: 25px;
+  margin-top: 10px;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 12px 20px;
+  width: 180px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+}
+
+.save-btn {
+  background: linear-gradient(to right, #A16EFF, #6A0DAD);
+  color: white;
+}
+.save-btn:hover {
+  background: linear-gradient(to right, #6A0DAD, #A16EFF);
+  transform: translateY(-2px);
+}
+
+.cancel-btn {
+  background: linear-gradient(to right, #A16EFF, #6A0DAD);
+  color: white;
+}
+.cancel-btn:hover {
+  background: linear-gradient(to right, #6A0DAD, #A16EFF);
+  transform: translateY(-2px);
+}
+
+/* Date picker color */
+.expense-form input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(17%) sepia(92%) saturate(7200%) hue-rotate(248deg)
+  brightness(91%) contrast(86%);
+  cursor: pointer;
+}
+.expense-form input[type="date"] {
+  color: #4B0082;
+  background: #fff;
+}
+
+/* Toast overrides */
+:host ::ng-deep .p-toast .p-toast-message-success .p-toast-detail,
+:host ::ng-deep .p-toast .p-toast-message-error .p-toast-detail {
+  color: black !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 16px;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .save-btn,
+  .cancel-btn {
+    width: 100%;
+  }
+
+  .piggy-bank-section {
+    padding: 24px;
+  }
+}

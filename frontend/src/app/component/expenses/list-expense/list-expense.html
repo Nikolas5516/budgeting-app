@@ -1,0 +1,97 @@
+<div class="app-container">
+  <app-sidebar (menuSelect)="onMenuSelect($event)"></app-sidebar>
+
+  <div class="content">
+    <div class="page-wrapper">
+      <!-- Header & Filters -->
+      <div class="expense-header">
+        <div class="expense-controls">
+          <div class="filters">
+            <input
+              type="date"
+              [(ngModel)]="filterDate"
+              placeholder="Filter by Date"
+            />
+
+            <select [(ngModel)]="filterCategory">
+              <option value="">All Categories</option>
+              <option *ngFor="let c of categories" [value]="c">
+                {{ c }}
+              </option>
+            </select>
+
+            <select [(ngModel)]="filterMethod">
+              <option value="">All Methods</option>
+              <option *ngFor="let m of methods" [value]="m">
+                {{ m }}
+              </option>
+            </select>
+          </div>
+
+          <button id="addExpenseBtn" (click)="goToAddExpense()">
+            + Add Expense
+          </button>
+        </div>
+      </div>
+
+      <!-- Expense Table -->
+      <div class="expense-table">
+        <div class="table-header">
+          <span>Date</span>
+          <span>Category</span>
+          <span>Amount</span>
+          <span>Frequency</span>
+          <span>Payment Method</span>
+          <span>Description</span>
+          <span>Next Due</span>
+          <span>Actions</span>
+        </div>
+
+        <div
+          *ngFor="let expense of filteredExpenses; let i = index"
+          class="table-row"
+        >
+          <span>{{ expense.date | date: 'yyyy-MM-dd' }}</span>
+          <span>{{ expense.category || '—' }}</span>
+          <span>${{ expense.amount | number: '1.2-2' }}</span>
+          <span>{{ expense.frequency || '—' }}</span>
+          <span>{{ expense.paymentMethod || '—' }}</span>
+          <span>{{ expense.description || '—' }}</span>
+          <span>
+            {{
+              expense.nextDueDate
+                ? (expense.nextDueDate | date: 'yyyy-MM-dd')
+                : '—'
+            }}
+          </span>
+
+          <span class="actions">
+            <button
+              type="button"
+              class="button edit"
+              (click)="editExpense(i)"
+            >
+              <i class="pi pi-pencil"></i> Edit
+            </button>
+            <button
+              type="button"
+              class="button delete"
+              (click)="confirmDelete(i)"
+            >
+              <i class="pi pi-trash"></i> Delete
+            </button>
+          </span>
+        </div>
+
+        <div
+          *ngIf="!loading && (!filteredExpenses || filteredExpenses.length === 0)"
+          class="no-data"
+        >
+          No expenses found.
+        </div>
+      </div>
+    </div>
+    <p-confirmDialog></p-confirmDialog>
+    <p-toast position="top-left" style="margin-left: 600px; margin-bottom: 140px;"></p-toast>
+  </div>
+</div>

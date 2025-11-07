@@ -1,0 +1,107 @@
+.landing-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--gradient-1) 0%, var(--gradient-2) 100%);
+}
+
+.landing-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: linear-gradient(135deg, #fafafa 0%, #ffffff 50%, #f5f3ff 100%);
+}
+
+.landing-content {
+  text-align: center;
+  max-width: 700px;
+  padding: 40px 20px;
+  z-index: 10;
+  position: relative;
+}
+
+.landing-title {
+  font-size: 40px;
+  color: #4B0082;
+  margin: 0 0 24px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  padding-bottom: 10px;
+  text-decoration: none;
+}
+
+.landing-subtitle {
+  font-size: 24px;
+  color: var(--purple-primary);
+  margin: 0 0 40px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.decorative-shapes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(106, 13, 173, 0.08) 0%, transparent 70%);
+}
+
+.shape-1 {
+  width: 400px;
+  height: 400px;
+  top: 10%;
+  right: 15%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.shape-2 {
+  width: 250px;
+  height: 250px;
+  bottom: 20%;
+  right: 30%;
+  animation: float 8s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.shape-3 {
+  width: 180px;
+  height: 180px;
+  top: 60%;
+  right: 10%;
+  animation: float 7s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+
+
+::ng-deep .landing-button {
+  background: var(--purple-primary) !important;
+  border: none !important;
+  padding: 16px 48px !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(106, 13, 173, 0.3) !important;
+  transition: all 0.3s ease !important;
+  color: white !important;
+
+  &:hover {
+    background: var(--purple-hover) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 32px rgba(106, 13, 173, 0.4) !important;
+  }
+
+  &:active {
+    transform: translateY(0) !important;
+  }
+
+}

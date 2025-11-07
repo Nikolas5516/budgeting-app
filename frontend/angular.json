@@ -25,8 +25,14 @@
               }
             ],
             "styles": [
-              "src/styles.css"
-            ]
+              "src/styles.css",
+              "src/styles/styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src"
+              ]
+            }
           },
           "configurations": {
             "production": {
@@ -81,8 +87,19 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src"
+              ]
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         }
@@ -90,6 +107,9 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
 }

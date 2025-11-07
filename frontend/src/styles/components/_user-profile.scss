@@ -1,0 +1,138 @@
+// === Profile Card ===
+.user-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: #E6CCF2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      font-size: 26px;
+      color: #6A0DAD;
+    }
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #4B0082;
+  }
+
+  p {
+    margin: 2px 0 0;
+    color: #666;
+    font-size: 13px;
+  }
+
+  .edit-btn {
+    margin-left: auto;
+    padding: 6px 12px;
+    background: #6A0DAD;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+      background: #8B2DC7;
+    }
+  }
+}
+
+// === Account Details ===
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail {
+  display: flex;
+  gap: 8px;
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  i {
+    font-size: 16px;
+    color: #6A0DAD;
+  }
+}
+
+// === Data State ===
+.loading-container,
+.error-container,
+.no-data-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 40px 20px;
+}
+
+.loading-spinner,
+.error-message,
+.no-data-message {
+  text-align: center;
+  background: #F9F6FC;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+
+  i {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 16px;
+    color: #4B0082;
+    margin: 0;
+  }
+}
+
+.loading-spinner i {
+  color: #6A0DAD;
+}
+
+.error-message i {
+  color: #dc3545;
+}
+
+.no-data-message i {
+  color: #6c757d;
+}
+
+.error-message p,
+.no-data-message p {
+  margin-bottom: 20px;
+}
+
+.retry-btn {
+  padding: 12px 24px;
+  background: #6A0DAD;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #8B2DC7;
+  }
+}

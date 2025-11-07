@@ -1,0 +1,186 @@
+:host, body, .app-container {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  height: 100vh;
+  display: flex;
+  background: #F0E6FA;
+  overflow: hidden;
+}
+
+.app-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  background: #F0E6FA;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  background: #fff;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.05);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+
+.page-wrapper {
+  width: 100%;
+  max-width: 800px;
+  padding: 12px 24px 25px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Header styles */
+.welcome h2,
+.welcome-expense h2 {
+  font-size: 28px;
+  color: #4B0082;
+  margin: 0;
+  position: relative;
+}
+.welcome h2::after,
+.welcome-expense h2::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(to right, #A16EFF, #C080FF);
+  border-radius: 2px;
+  margin-top: 6px;
+}
+
+.expense-subtitle,
+.payment-subtitle {
+  font-size: 14px;
+  color: #6A0DAD;
+  opacity: 0.85;
+  margin: 10px 0;
+}
+
+
+.payment-form,
+.expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+.payment-form label,
+.expense-form label {
+  font-size: 13px;
+  color: #4B0082;
+  font-weight: 500;
+}
+
+
+.payment-form input,
+.payment-form select,
+.expense-form input,
+.expense-form select {
+  padding: 10px;
+  border: 1px solid #DCC6E0;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  background: #F9F6FC;
+  color: #4B0082;
+  transition: border 0.3s;
+}
+.payment-form input:focus,
+.payment-form select:focus,
+.expense-form input:focus,
+.expense-form select:focus {
+  border-color: #6A0DAD;
+}
+
+
+.invalid-field { border-color: red; }
+.required { color: red; }
+
+.add-more-checkbox { display:flex; align-items:center; gap:6px; margin-bottom:15px; }
+
+
+.submit-btn,
+.save-btn {
+  padding: 12px 20px;
+  width: 160px;
+  background: linear-gradient(to right,#A16EFF,#6A0DAD);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.submit-btn:hover,
+.save-btn:hover {
+  background: linear-gradient(to right,#6A0DAD,#A16EFF);
+}
+
+
+.text {
+  margin-top: 15px;
+  font-size: 16px;
+  color: #4B0082;
+  font-weight: 500;
+}
+
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 60px;
+}
+.field-msg {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: #d9534f;
+  visibility: hidden;
+  height: 16px;
+}
+.field-msg.show {
+  visibility: visible;
+}
+
+.payment-form input[type="date"]::-webkit-calendar-picker-indicator,
+.expense-form input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(17%) sepia(92%) saturate(7200%) hue-rotate(248deg) brightness(91%) contrast(86%);
+  cursor: pointer;
+}
+.payment-form input::placeholder,
+.expense-form input::placeholder { color: #4B0082; }
+
+:host ::ng-deep .p-checkbox.p-checkbox-checked .p-checkbox-box {
+  background-color: #A16EFF !important;
+  border-color: #A16EFF !important;
+}
+:host ::ng-deep .p-checkbox.p-checkbox-checked .p-checkbox-icon {
+  color: white !important;
+}
+:host ::ng-deep .p-toast .p-toast-message-success .p-toast-detail {
+  color: black !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+
+.button {
+  display: flex;
+  gap: 35px;
+  margin-top: 10px;
+}
+.form-field input[type="date"] {
+  color: #4B0082;
+  font-family: 'Poppins', sans-serif;
+  background: #fff;
+}
+
